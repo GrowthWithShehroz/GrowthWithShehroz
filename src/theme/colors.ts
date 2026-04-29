@@ -21,8 +21,25 @@ export const palette = {
   success: '#1F8A4F',
 };
 
-export const lightTheme = {
-  mode: 'light' as const,
+export interface AppTheme {
+  mode: 'light' | 'dark';
+  bg: string;
+  surface: string;
+  text: string;
+  textSoft: string;
+  border: string;
+  primary: string;
+  primaryAlt: string;
+  accent: string;
+  accentSoft: string;
+  cardBg: string;
+  cardBgAlt: string;
+  error: string;
+  success: string;
+}
+
+export const lightTheme: AppTheme = {
+  mode: 'light',
   bg: palette.cream,
   surface: palette.white,
   text: palette.ink,
@@ -38,8 +55,8 @@ export const lightTheme = {
   success: palette.success,
 };
 
-export const darkTheme = {
-  mode: 'dark' as const,
+export const darkTheme: AppTheme = {
+  mode: 'dark',
   bg: palette.islamicGreenDark,
   surface: palette.inkSoft,
   text: palette.cream,
@@ -55,4 +72,3 @@ export const darkTheme = {
   success: palette.success,
 };
 
-export type AppTheme = typeof lightTheme;

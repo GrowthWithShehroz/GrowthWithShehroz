@@ -24,7 +24,8 @@
       "android": {
         "buildType": "app-bundle"
       },
-      "channel": "production"
+      "channel": "production",
+      "preBuildCommand": "echo $GOOGLE_SERVICES_JSON > google-services.json"
     }
   },
   "submit": {

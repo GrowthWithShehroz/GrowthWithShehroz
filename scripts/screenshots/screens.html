@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1080" />
+<title>Islamic Daily Wisdom — Play Store Screenshots</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #0F4C3A;
+    --green-light: #1A6E55;
+    --green-dark: #082C22;
+    --gold: #D4AF37;
+    --gold-light: #E8C656;
+    --cream: #F8F4E9;
+    --ink: #0B1A14;
+    --ink-soft: #1F2D27;
+    --gray-200: #D6D6D6;
+    --gray-600: #5C5C5C;
+    --gray-800: #2A2A2A;
+  }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #000;
+  }
+  .screen {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen.light { background: var(--cream); color: var(--ink); }
+  .screen.dark { background: var(--green-dark); color: var(--cream); }
+
+  .statusbar {
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    font-weight: 600;
+    font-size: 28px;
+  }
+  .light .statusbar { color: var(--ink); }
+  .dark .statusbar { color: var(--cream); }
+
+  .content {
+    flex: 1;
+    padding: 48px;
+    overflow: hidden;
+  }
+  .content.no-scroll { overflow: hidden; }
+
+  /* Marketing banner at top */
+  .banner {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+    color: var(--cream);
+    padding: 56px 48px;
+    text-align: center;
+  }
+  .banner .arabic {
+    font-family: 'Amiri', 'Scheherazade New', serif;
+    font-size: 42px;
+    color: var(--gold);
+    margin-bottom: 16px;
+    direction: rtl;
+  }
+  .banner h1 { font-size: 56px; font-weight: 700; line-height: 1.15; }
+  .banner h2 { font-size: 36px; font-weight: 500; opacity: 0.92; margin-top: 8px; }
+
+  /* Generic UI primitives — bigger, real-phone proportions */
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 36px;
+    border: 1px solid;
+    border-color: rgba(128,128,128,0.25);
+    border-radius: 24px;
+    margin-bottom: 18px;
+    font-size: 32px;
+    font-weight: 600;
+  }
+  .row .name { font-size: 36px; font-weight: 600; }
+  .row .time { font-size: 32px; opacity: 0.8; font-variant-numeric: tabular-nums; }
+  .row.next { border: 4px solid var(--gold); }
+  .row.next .time { color: var(--gold); font-weight: 700; }
+  .row.done { opacity: 0.55; }
+  .check {
+    width: 56px; height: 56px; border-radius: 28px;
+    border: 4px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 32px; font-weight: 700;
+  }
+  .row.done .check { background: var(--gold); color: #000; border-color: var(--gold); }
+
+  .toggle {
+    width: 76px; height: 44px; border-radius: 22px;
+    background: rgba(128,128,128,0.3); position: relative;
+  }
+  .toggle.on { background: var(--gold); }
+  .toggle::after {
+    content: ''; position: absolute; top: 4px; left: 4px;
+    width: 36px; height: 36px; border-radius: 18px; background: #fff;
+    transition: 0.2s;
+  }
+  .toggle.on::after { left: 36px; }
+
+  .section-title {
+    font-size: 22px;
+    letter-spacing: 2.2px;
+    font-weight: 700;
+    opacity: 0.6;
+    margin: 36px 0 18px;
+    text-transform: uppercase;
+  }
+
+  /* HOME */
+  .home-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+  }
+  .countdown { flex: 1; }
+  .countdown .label {
+    font-size: 22px; letter-spacing: 1.6px; opacity: 0.65;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .countdown .time {
+    font-size: 88px; font-weight: 800; margin-top: 8px;
+    font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .streak {
+    background: var(--gold);
+    color: #000;
+    padding: 22px 28px;
+    border-radius: 28px;
+    text-align: center;
+    min-width: 130px;
+  }
+  .streak .num { font-size: 56px; font-weight: 800; line-height: 1; }
+  .streak .lbl { font-size: 18px; letter-spacing: 1px; font-weight: 700; margin-top: 4px; }
+
+  .wisdom {
+    margin-top: 56px;
+    border: 4px solid var(--gold);
+    border-radius: 32px;
+    padding: 56px 44px;
+    text-align: center;
+  }
+  .wisdom .rule { width: 132px; height: 4px; background: var(--gold); margin: 0 auto 20px; border-radius: 2px; }
+  .wisdom .tag {
+    color: var(--gold); font-size: 22px; letter-spacing: 3px; font-weight: 800;
+  }
+  .wisdom .arabic {
+    font-family: 'Amiri', 'Scheherazade New', serif;
+    font-size: 64px;
+    line-height: 1.5;
+    margin: 36px 0 28px;
+    direction: rtl;
+  }
+  .wisdom .translation { font-style: italic; font-size: 32px; line-height: 1.45; opacity: 0.85; }
+  .wisdom .divider { height: 2px; background: rgba(128,128,128,0.3); margin: 32px -16px; }
+  .wisdom .reflection { font-size: 28px; line-height: 1.5; }
+  .wisdom .citation {
+    color: var(--gold); font-size: 22px; letter-spacing: 2.5px; font-weight: 800;
+    margin-top: 32px;
+  }
+  .wisdom .src { font-size: 20px; opacity: 0.55; margin-top: 6px; }
+  .share-btn {
+    margin-top: 48px;
+    background: var(--gold);
+    color: #000;
+    text-align: center;
+    padding: 36px;
+    border-radius: 28px;
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Archive cards */
+  .arch-card {
+    border: 1px solid rgba(128,128,128,0.25);
+    border-radius: 28px;
+    padding: 36px;
+    margin-bottom: 22px;
+    display: flex;
+    gap: 22px;
+  }
+  .arch-card .info { flex: 1; }
+  .arch-card .ref { color: var(--gold); font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+  .arch-card .quote { font-style: italic; font-size: 30px; margin-top: 10px; line-height: 1.4; }
+  .arch-card .reflection { font-size: 24px; opacity: 0.75; margin-top: 14px; line-height: 1.45; }
+  .arch-card .star { color: var(--gold); font-size: 56px; line-height: 1; }
+  .arch-card .star.empty { opacity: 0.25; }
+  .search {
+    width: 100%;
+    border: 2px solid rgba(128,128,128,0.3);
+    border-radius: 24px;
+    padding: 28px 36px;
+    background: transparent;
+    color: inherit;
+    font-size: 30px;
+    margin-bottom: 28px;
+  }
+
+  /* Settings */
+  .row.selected { background: var(--green); color: #fff; border-color: var(--green); }
+  .dark .row.selected { background: var(--gold); color: #000; border-color: var(--gold); }
+  .premium-tag {
+    color: var(--gold); font-size: 20px; font-weight: 800; letter-spacing: 1.5px;
+  }
+  .btn {
+    padding: 30px 48px;
+    background: var(--green);
+    color: #fff;
+    border-radius: 24px;
+    font-weight: 800;
+    font-size: 32px;
+    text-align: center;
+    display: inline-block;
+  }
+  .dark .btn { background: var(--gold); color: #000; }
+
+  /* Marketing tagline overlay */
+  .marketing-bottom {
+    padding: 36px 48px 48px;
+    background: rgba(0,0,0,0.04);
+    text-align: center;
+  }
+  .dark .marketing-bottom { background: rgba(255,255,255,0.04); }
+  .marketing-bottom h3 {
+    font-size: 38px; font-weight: 800; line-height: 1.2;
+    color: var(--green);
+  }
+  .dark .marketing-bottom h3 { color: var(--gold); }
+  .marketing-bottom p {
+    margin-top: 12px; font-size: 26px; opacity: 0.75; line-height: 1.4;
+  }
+
+  /* Onboarding */
+  .ob-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    text-align: center;
+  }
+  .ob-bismillah {
+    font-size: 180px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 36px;
+    font-family: 'Amiri', 'Scheherazade New', serif;
+  }
+  .ob-emoji { font-size: 200px; margin-bottom: 32px; }
+  .ob-title { font-size: 64px; font-weight: 800; margin-bottom: 20px; }
+  .ob-body { font-size: 32px; line-height: 1.5; opacity: 0.75; max-width: 800px; margin: 0 auto; }
+  .ob-cta {
+    margin-top: 80px;
+    background: var(--green);
+    color: #fff;
+    padding: 36px 64px;
+    border-radius: 28px;
+    font-size: 36px;
+    font-weight: 800;
+  }
+  .ob-dots {
+    display: flex; gap: 14px; justify-content: center;
+    margin: 48px 0 0;
+  }
+  .ob-dot { width: 16px; height: 16px; background: rgba(128,128,128,0.4); border-radius: 8px; }
+  .ob-dot.active { width: 56px; background: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- ========================= SCREEN 1: HOME ========================= -->
+<div class="screen light" id="screen-1">
+  <div class="banner">
+    <div class="arabic">إِنَّ مَعَ الْعُسْرِ يُسْرًا</div>
+    <h1>Daily Quranic Wisdom</h1>
+    <h2>Beautifully shareable, every day</h2>
+  </div>
+  <div class="content no-scroll">
+    <div class="home-header">
+      <div class="countdown">
+        <div class="label">Next: Asr</div>
+        <div class="time">02:14:38</div>
+      </div>
+      <div class="streak">
+        <div class="num">7</div>
+        <div class="lbl">DAY 🔥</div>
+      </div>
+    </div>
+    <div class="wisdom">
+      <div class="rule"></div>
+      <div class="tag">DAILY WISDOM</div>
+      <div class="arabic">إِنَّ مَعَ الْعُسْرِ يُسْرًا</div>
+      <div class="translation">"Indeed, with hardship comes ease."</div>
+      <div class="divider"></div>
+      <div class="reflection">Difficulty and ease arrive together. Patience reveals what struggle conceals.</div>
+      <div class="citation">ASH-SHARH · 94:6</div>
+      <div class="src">Quran 94:6 — Sahih International</div>
+    </div>
+    <div class="share-btn">Share today's wisdom</div>
+  </div>
+</div>
+
+<!-- ========================= SCREEN 2: PRAYERS ========================= -->
+<div class="screen light" id="screen-2">
+  <div class="banner">
+    <h1>Five Prayer Times</h1>
+    <h2>Accurate to your location</h2>
+  </div>
+  <div class="content no-scroll">
+    <div class="section-title">TODAY · 30 APRIL</div>
+
+    <div class="row done">
+      <div>
+        <div class="name">Fajr</div>
+        <div class="time">04:42</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div class="toggle on"></div>
+        <div class="check">✓</div>
+      </div>
+    </div>
+
+    <div class="row done">
+      <div>
+        <div class="name">Dhuhr</div>
+        <div class="time">12:18</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div class="toggle on"></div>
+        <div class="check">✓</div>
+      </div>
+    </div>
+
+    <div class="row next">
+      <div>
+        <div class="name">Asr</div>
+        <div class="time">15:54</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div class="toggle on"></div>
+        <div class="check">○</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="name">Maghrib</div>
+        <div class="time">18:36</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div class="toggle on"></div>
+        <div class="check">○</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="name">Isha</div>
+        <div class="time">20:02</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div class="toggle"></div>
+        <div class="check">○</div>
+      </div>
+    </div>
+  </div>
+  <div class="marketing-bottom">
+    <h3>Gentle Azan reminders</h3>
+    <p>Notified at every prayer · works offline · respects Do Not Disturb</p>
+  </div>
+</div>
+
+<!-- ========================= SCREEN 3: ARCHIVE ========================= -->
+<div class="screen light" id="screen-3">
+  <div class="banner">
+    <h1>Wisdom Archive</h1>
+    <h2>Browse, search, favorite</h2>
+  </div>
+  <div class="content no-scroll">
+    <input class="search" placeholder="Search by Surah, translation, reflection" />
+
+    <div class="arch-card">
+      <div class="info">
+        <div class="ref">AL-BAQARAH · 2:286</div>
+        <div class="quote">"Allah does not burden a soul beyond that it can bear."</div>
+        <div class="reflection">Whatever you face today, it has been measured for your strength. Take the next small step.</div>
+      </div>
+      <div class="star">★</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="info">
+        <div class="ref">ASH-SHARH · 94:6</div>
+        <div class="quote">"Indeed, with hardship comes ease."</div>
+        <div class="reflection">Difficulty and ease arrive together. Patience reveals what struggle conceals.</div>
+      </div>
+      <div class="star empty">★</div>
+    </div>
+
+    <div class="arch-card">
+      <div class="info">
+        <div class="ref">AT-TALAQ · 65:3</div>
+        <div class="quote">"And whoever relies upon Allah — then He is sufficient for him."</div>
+        <div class="reflection">Do your part with sincerity, then release the outcome.</div>
+      </div>
+      <div class="star">★</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= SCREEN 4: SETTINGS DARK ========================= -->
+<div class="screen dark" id="screen-4">
+  <div class="banner">
+    <h1>Built for your routine</h1>
+    <h2>Light + dark · Urdu support · Privacy first</h2>
+  </div>
+  <div class="content no-scroll">
+    <div class="section-title">PREMIUM</div>
+    <div class="btn">Upgrade to Premium</div>
+
+    <div class="section-title">LOCATION</div>
+    <div style="font-size:32px">Karachi, Pakistan</div>
+
+    <div class="section-title">PRAYER METHOD</div>
+    <div class="row selected">Karachi</div>
+    <div class="row">Muslim World League</div>
+    <div class="row">North America</div>
+
+    <div class="section-title">THEME</div>
+    <div class="row">System</div>
+    <div class="row selected">Dark</div>
+  </div>
+</div>
+
+<!-- ========================= SCREEN 5: ONBOARDING WELCOME ========================= -->
+<div class="screen light" id="screen-5">
+  <div class="ob-screen">
+    <div class="ob-bismillah">﷽</div>
+    <div class="ob-title">Welcome</div>
+    <div class="ob-body">A Quranic verse each day, accurate prayer times, and gentle Azan reminders — built with care, ad-free for Premium users, and respectful of your privacy.</div>
+    <div class="ob-cta">Continue</div>
+    <div class="ob-dots">
+      <div class="ob-dot active"></div>
+      <div class="ob-dot"></div>
+      <div class="ob-dot"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

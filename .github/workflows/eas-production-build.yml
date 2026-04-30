@@ -38,3 +38,5 @@ jobs:
         run: eas build --platform android --profile production --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_PROJECT_ID: 1c5702a2-5c9e-4bff-909e-1dadda166f73
+          EAS_BUILD_NO_EXPO_GO_WARNING: "true"

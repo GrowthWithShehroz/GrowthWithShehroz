@@ -56,11 +56,16 @@ const config: ExpoConfig = {
                   'READ_EXTERNAL_STORAGE',
                   'WRITE_EXTERNAL_STORAGE',
                 ],
-          kotlinVersion: '1.9.25',
     },
     plugins: [
           'expo-router',
           'expo-localization',
+          [
+                  'expo-build-properties',
+            {
+                      android: { kotlinVersion: '1.9.25' },
+            },
+                ],
           [
                   'expo-notifications',
             {

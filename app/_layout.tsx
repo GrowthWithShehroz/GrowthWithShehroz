@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
-import { Stack } from 'expo-router';
+import { Redirect, Stack, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -80,6 +80,17 @@ export default function RootLayout() {
 
 function ThemedShell() {
   const { isDark, theme } = useTheme();
+  const hasOnboarded = useAppStore((s) => s.hasOnboarded);
+  const segments = useSegments();
+  const onOnboarding = segments[0] === 'onboarding';
+
+  if (!hasOnboarded && !onOnboarding) {
+    return <Redirect href="/onboarding" />;
+  }
+  if (hasOnboarded && onOnboarding) {
+    return <Redirect href="/(tabs)" />;
+  }
+
   return (
     <>
       <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor={theme.bg} />
@@ -92,6 +103,7 @@ function ThemedShell() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
       </Stack>
     </>

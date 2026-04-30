@@ -30,6 +30,13 @@ const config: ExpoConfig = {
       'POST_NOTIFICATIONS',
       'VIBRATE',
       'INTERNET',
+      'RECEIVE_BOOT_COMPLETED',
+      'SCHEDULE_EXACT_ALARM',
+      'USE_EXACT_ALARM',
+    ],
+    blockedPermissions: [
+      'READ_EXTERNAL_STORAGE',
+      'WRITE_EXTERNAL_STORAGE',
     ],
   },
   plugins: [

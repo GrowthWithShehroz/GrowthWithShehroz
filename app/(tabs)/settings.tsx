@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AdBanner } from '@/components/AdBanner';
 import { PaywallSheet } from '@/components/PaywallSheet';
 import { PremiumBadge } from '@/components/PremiumBadge';
+import { deleteAllUserData } from '@/features/auth/deleteData';
 import { scheduleRollingWindow, clearAllPrayerNotifications } from '@/features/notifications/scheduler';
 import { requestAndGetLocation } from '@/features/prayers/location';
 import { restorePurchases } from '@/features/iap/client';
@@ -79,6 +80,36 @@ export default function SettingsScreen() {
     } finally {
       setBusy(false);
     }
+  };
+
+  const handleDeleteData = () => {
+    Alert.alert(
+      'Delete all my data?',
+      'This will permanently remove your prayer history, streak, favorites, and settings — both on this device and from the cloud. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete everything',
+          style: 'destructive',
+          onPress: async () => {
+            setBusy(true);
+            const result = await deleteAllUserData();
+            setBusy(false);
+            if (result.ok) {
+              Alert.alert(
+                'Data deleted',
+                'Your data has been removed. Please close and reopen the app.',
+              );
+            } else {
+              Alert.alert(
+                'Could not finish',
+                'Some data may not have been deleted. Check your connection and try again.',
+              );
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -210,6 +241,32 @@ export default function SettingsScreen() {
           />
           <Text style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}>
             Toggle individual prayers in the Prayers tab.
+          </Text>
+        </Section>
+
+        <Section title="Privacy & data">
+          <Pressable
+            onPress={handleDeleteData}
+            disabled={busy}
+            style={({ pressed }) => [
+              {
+                paddingHorizontal: spacing.lg,
+                paddingVertical: spacing.md,
+                backgroundColor: theme.cardBg,
+                borderColor: theme.error,
+                borderWidth: 1,
+                borderRadius: radius.md,
+                alignSelf: 'flex-start',
+                opacity: pressed || busy ? 0.7 : 1,
+              },
+            ]}
+          >
+            <Text style={[typography.body, { color: theme.error }]}>
+              Delete all my data
+            </Text>
+          </Pressable>
+          <Text style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}>
+            Removes your prayer history, streak, favorites, and settings on this device and in the cloud.
           </Text>
         </Section>
       </ScrollView>

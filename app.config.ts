@@ -23,7 +23,9 @@ const config: ExpoConfig = {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#0F4C3A',
     },
-    googleServicesFile: env('GOOGLE_SERVICES_JSON', './android/google-services.json'),
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON
+      ? './google-services.json'
+      : './android/google-services.json',
     permissions: [
       'ACCESS_COARSE_LOCATION',
       'ACCESS_FINE_LOCATION',

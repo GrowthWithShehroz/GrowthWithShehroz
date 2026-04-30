@@ -60,6 +60,7 @@ const config: ExpoConfig = {
     plugins: [
           'expo-router',
           'expo-localization',
+          ['./plugins/with-kotlin-version', '1.9.25'],
           [
                   'expo-build-properties',
             {

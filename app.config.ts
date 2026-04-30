@@ -1,6 +1,4 @@
 import type { ExpoConfig } from 'expo/config';
-import * as fs from 'fs';
-import * as path from 'path';
 
 const env = (key: string, fallback = ''): string => process.env[key] ?? fallback;
 
@@ -12,7 +10,9 @@ const getGoogleServicesFile = (): string => {
   }
   // If the value looks like JSON content (starts with '{'), write it to a file
   if (val.trim().startsWith('{')) {
-    const tmpPath = path.join('/tmp', 'google-services.json');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const fs = require('fs');
+    const tmpPath = '/tmp/google-services.json';
     fs.writeFileSync(tmpPath, val);
     return tmpPath;
   }

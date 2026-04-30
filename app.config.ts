@@ -1,6 +1,24 @@
 import type { ExpoConfig } from 'expo/config';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const env = (key: string, fallback = ''): string => process.env[key] ?? fallback;
+
+// Handle GOOGLE_SERVICES_JSON: if it contains JSON content (not a file path), write it to a temp file
+const getGoogleServicesFile = (): string => {
+  const val = process.env.GOOGLE_SERVICES_JSON;
+  if (!val) {
+    return './android/google-services.json';
+  }
+  // If the value looks like JSON content (starts with '{'), write it to a file
+  if (val.trim().startsWith('{')) {
+    const tmpPath = path.join('/tmp', 'google-services.json');
+    fs.writeFileSync(tmpPath, val);
+    return tmpPath;
+  }
+  // Otherwise assume it's already a file path
+  return val;
+};
 
 const config: ExpoConfig = {
   name: 'Islamic Daily Wisdom',
@@ -23,9 +41,7 @@ const config: ExpoConfig = {
       foregroundImage: './assets/images/adaptive-icon.png',
       backgroundColor: '#0F4C3A',
     },
-    googleServicesFile: process.env.GOOGLE_SERVICES_JSON
-      ? './google-services.json'
-      : './android/google-services.json',
+    googleServicesFile: getGoogleServicesFile(),
     permissions: [
       'ACCESS_COARSE_LOCATION',
       'ACCESS_FINE_LOCATION',

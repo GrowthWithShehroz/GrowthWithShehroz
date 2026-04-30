@@ -1,0 +1,65 @@
+{
+  "common": {
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "Something went wrong"
+  },
+  "tabs": {
+    "home": "Home",
+    "prayers": "Prayers",
+    "archive": "Archive",
+    "settings": "Settings"
+  },
+  "home": {
+    "shareWisdom": "Share today's wisdom",
+    "viewedToday": "You've viewed today's wisdom.",
+    "comeBackTomorrow": "Come back tomorrow, or unlock the full archive with Premium.",
+    "unlockPremium": "Unlock Premium",
+    "nextPrayer": "Next: {{name}}",
+    "locationNeeded": "Set your location in Settings to see prayer times.",
+    "allComplete": "All prayers complete for today."
+  },
+  "prayers": {
+    "title": "Today's Prayers",
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha"
+  },
+  "archive": {
+    "search": "Search by Surah, translation, reflection",
+    "lockedTitle": "Wisdom Archive",
+    "lockedSubtitle": "Browse and favorite past wisdom cards. Unlock with Premium.",
+    "noMatches": "No matches"
+  },
+  "settings": {
+    "premium": "Premium",
+    "location": "Location",
+    "calcMethod": "Prayer calculation method",
+    "sound": "Notification sound",
+    "theme": "Theme",
+    "language": "Language",
+    "notifications": "Notifications",
+    "detect": "Detect location",
+    "update": "Update location",
+    "restore": "Restore purchases"
+  },
+  "paywall": {
+    "title": "Unlock Premium",
+    "subtitle": "Support development. Get an ad-free experience.",
+    "removeAds": "Remove all ads",
+    "unlockArchive": "Unlock the wisdom archive",
+    "customSounds": "Custom Azan notification sounds",
+    "subscribe": "Subscribe — $0.99 / month",
+    "restore": "Restore purchases",
+    "notNow": "Not now"
+  },
+  "streak": {
+    "label": "STREAK",
+    "days_one": "day",
+    "days_other": "days",
+    "longest": "Longest: {{n}}"
+  }
+}

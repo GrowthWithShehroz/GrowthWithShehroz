@@ -21,6 +21,9 @@
     },
     "production": {
       "autoIncrement": true,
+            "env": {
+                      "ORG_GRADLE_PROJECT_kotlinVersion": "1.9.25"
+            },
       "android": {
         "buildType": "app-bundle"
       },

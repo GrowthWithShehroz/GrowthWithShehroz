@@ -3,6 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAuth, getFirestore, isFirebaseAvailable } from '@/services/firebase';
 import type { PrayerCompletion, PrayerName } from '@/types';
 
+export { isAllComplete } from './pure';
+
 const KEY = (date: string) => `idw-completion-${date}`;
 
 const empty: PrayerCompletion = {
@@ -58,10 +60,6 @@ async function mirrorToFirestore(date: string, c: PrayerCompletion): Promise<voi
   } catch (e) {
     if (__DEV__) console.warn('[completions] mirror failed', e);
   }
-}
-
-export function isAllComplete(c: PrayerCompletion): boolean {
-  return c.fajr && c.dhuhr && c.asr && c.maghrib && c.isha;
 }
 
 export async function getCompletionRange(dates: string[]): Promise<Record<string, PrayerCompletion>> {

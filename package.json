@@ -8,6 +8,7 @@
     "android": "expo run:android",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test src/features/streak/pure.test.ts src/features/prayers/pure.test.ts src/features/wisdom/fallback.test.ts",
     "seed:wisdom": "tsx scripts/seed-wisdom.ts"
   },
   "dependencies": {
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
+    "@types/node": "^20.14.0",
     "@types/react": "~18.3.12",
     "tsx": "^4.19.1",
     "typescript": "~5.3.3"

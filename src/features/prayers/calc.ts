@@ -1,6 +1,8 @@
 import { CalculationMethod, Coordinates, PrayerTimes } from 'adhan';
 
-import type { CalcMethod, Coords, PrayerName, PrayerTime } from '@/types';
+import type { CalcMethod, Coords, PrayerTime } from '@/types';
+
+export { findNextPrayer, findCurrentPrayer } from './pure';
 
 const METHOD_FACTORY: Record<CalcMethod, () => ReturnType<typeof CalculationMethod.MuslimWorldLeague>> = {
   MuslimWorldLeague: () => CalculationMethod.MuslimWorldLeague(),
@@ -30,15 +32,3 @@ export function getPrayerTimesFor(date: Date, coords: Coords, method: CalcMethod
   ];
 }
 
-export function findNextPrayer(times: PrayerTime[], now = new Date()): PrayerTime | null {
-  return times.find((p) => p.time.getTime() > now.getTime()) ?? null;
-}
-
-export function findCurrentPrayer(times: PrayerTime[], now = new Date()): PrayerName | null {
-  let current: PrayerName | null = null;
-  for (const p of times) {
-    if (p.time.getTime() <= now.getTime()) current = p.name;
-    else break;
-  }
-  return current;
-}

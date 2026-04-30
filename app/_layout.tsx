@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { warnIfMissing } from '@/config/env';
 import { initAds } from '@/features/ads/client';
 import { maybeShowInterstitialOnOpen } from '@/features/ads/interstitial';
@@ -34,7 +35,7 @@ export default function RootLayout() {
       try {
         warnIfMissing();
         configureNotifications();
-        initI18n(language);
+        initI18n(useAppStore.getState().language);
         await hydratePremiumFromCache();
         await Promise.all([
           signInAnonymouslyIfNeeded(),
@@ -54,20 +55,26 @@ export default function RootLayout() {
     return () => {
       mounted = false;
     };
-  }, [language]);
+  }, []);
+
+  useEffect(() => {
+    if (ready) initI18n(language);
+  }, [language, ready]);
 
   if (!ready) return null;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider>
-            <ThemedShell />
-          </ThemeProvider>
-        </QueryClientProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <ErrorBoundary>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider>
+              <ThemedShell />
+            </ThemeProvider>
+          </QueryClientProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 }
 

@@ -64,7 +64,12 @@ const config: ExpoConfig = {
           [
                   'expo-build-properties',
             {
-                      android: { kotlinVersion: '1.9.25' },
+                      android: {
+                              kotlinVersion: '1.9.25',
+                              compileSdkVersion: 35,
+                              targetSdkVersion: 35,
+                              buildToolsVersion: '35.0.0',
+                      },
             },
                 ],
           [

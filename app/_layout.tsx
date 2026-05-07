@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
-import { Redirect, Stack, useSegments } from 'expo-router';
+import { router, Stack, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -82,14 +82,17 @@ function ThemedShell() {
   const { isDark, theme } = useTheme();
   const hasOnboarded = useAppStore((s) => s.hasOnboarded);
   const segments = useSegments();
-  const onOnboarding = segments[0] === 'onboarding';
 
-  if (!hasOnboarded && !onOnboarding) {
-    return <Redirect href="/onboarding" />;
-  }
-  if (hasOnboarded && onOnboarding) {
-    return <Redirect href="/(tabs)" />;
-  }
+  useEffect(() => {
+    const top = segments[0] as string | undefined;
+    const onOnboarding = top === 'onboarding';
+    const inTabs = top === '(tabs)' || top === undefined;
+    if (!hasOnboarded && inTabs) {
+      router.replace('/onboarding');
+    } else if (hasOnboarded && onOnboarding) {
+      router.replace('/(tabs)');
+    }
+  }, [hasOnboarded, segments]);
 
   return (
     <>

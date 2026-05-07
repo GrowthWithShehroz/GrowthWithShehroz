@@ -7,7 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { warnIfMissing } from '@/config/env';
+import { FORCE_PREMIUM_FOR_TESTING, warnIfMissing } from '@/config/env';
 import { initAds } from '@/features/ads/client';
 import { maybeShowInterstitialOnOpen } from '@/features/ads/interstitial';
 import { signInAnonymouslyIfNeeded } from '@/features/auth/client';
@@ -42,6 +42,9 @@ export default function RootLayout() {
           configureIap(),
           initAds(),
         ]);
+        if (FORCE_PREMIUM_FOR_TESTING) {
+          useAppStore.getState().setPremium(true);
+        }
         void maybeShowInterstitialOnOpen();
       } catch (e) {
         if (__DEV__) console.warn('[boot] init step failed', e);

@@ -13,6 +13,17 @@ const TEST_INTERSTITIAL = 'ca-app-pub-3940256099942544/1033173712';
 
 const isProd = !__DEV__;
 
+/**
+ * TESTING FLAG — set to true to give every user full Premium for free
+ * (no ads, full archive, custom sounds, no paywall). Used while we
+ * gather feedback in internal/closed testing tracks.
+ *
+ * BEFORE PUBLIC PRODUCTION LAUNCH: set this to false, push a new build,
+ * and roll out. Existing testers will lose their granted Premium on
+ * next cold start unless they actually subscribe via RevenueCat.
+ */
+export const FORCE_PREMIUM_FOR_TESTING = true;
+
 function read(key: EnvKey): string | undefined {
   const v = process.env[key];
   return v && v.length > 0 ? v : undefined;

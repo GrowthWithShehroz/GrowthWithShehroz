@@ -181,15 +181,17 @@ def make_splash(path: Path, w: int = 1284, h: int = 2778):
 
     cx = w // 2
     cy = h // 2 - int(h * 0.04)
-    r = int(min(w, h) * 0.13)
+    # Logo radius — was 0.13, bumped to 0.22 so the crescent fills meaningful
+    # screen real estate after `resizeMode: contain` letterboxing.
+    r = int(min(w, h) * 0.22)
 
     # Outer decorative ring (subtle, like a window frame)
-    ring_r = int(r * 1.85)
+    ring_r = int(r * 1.55)
     draw.ellipse([cx - ring_r, cy - ring_r, cx + ring_r, cy + ring_r],
-                 outline=GOLD + (40,), width=4)
-    inner_ring = int(r * 1.65)
+                 outline=GOLD + (40,), width=5)
+    inner_ring = int(r * 1.40)
     draw.ellipse([cx - inner_ring, cy - inner_ring, cx + inner_ring, cy + inner_ring],
-                 outline=GOLD + (90,), width=2)
+                 outline=GOLD + (90,), width=3)
 
     # Crescent
     crescent = Image.new("RGBA", img.size, TRANSPARENT)

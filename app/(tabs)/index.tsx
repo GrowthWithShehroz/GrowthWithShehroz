@@ -70,13 +70,10 @@ export default function HomeScreen() {
       setPaywallVisible(true);
       return;
     }
-    try {
-      const uri = await captureToFile(cardRef);
-      setImageUri(uri);
-      setShareVisible(true);
-    } catch (e) {
-      if (__DEV__) console.warn('[home] capture failed', e);
-    }
+    const uri = await captureToFile(cardRef);
+    if (!uri) return;
+    setImageUri(uri);
+    setShareVisible(true);
   };
 
   return (

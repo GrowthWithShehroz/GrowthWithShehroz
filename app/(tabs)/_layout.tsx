@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native';
 
 import { useTheme } from '@/theme';
@@ -10,6 +11,7 @@ function TabIcon({ glyph, color }: { glyph: string; color: string }) {
 
 export default function TabsLayout() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   return (
     <Tabs
       screenOptions={{
@@ -26,28 +28,28 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('tabs.home'),
           tabBarIcon: ({ color }) => <TabIcon glyph="✦" color={color} />,
         }}
       />
       <Tabs.Screen
         name="prayers"
         options={{
-          title: 'Prayers',
+          title: t('tabs.prayers'),
           tabBarIcon: ({ color }) => <TabIcon glyph="☪" color={color} />,
         }}
       />
       <Tabs.Screen
         name="archive"
         options={{
-          title: 'Archive',
+          title: t('tabs.archive'),
           tabBarIcon: ({ color }) => <TabIcon glyph="❡" color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t('tabs.settings'),
           tabBarIcon: ({ color }) => <TabIcon glyph="⚙" color={color} />,
         }}
       />

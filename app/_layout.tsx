@@ -12,7 +12,7 @@ import { initAds } from '@/features/ads/client';
 import { maybeShowInterstitialOnOpen } from '@/features/ads/interstitial';
 import { signInAnonymouslyIfNeeded } from '@/features/auth/client';
 import { configureIap, hydratePremiumFromCache } from '@/features/iap/client';
-import { initI18n } from '@/services/i18n';
+import { initI18n, setLanguage as setI18nLanguage } from '@/services/i18n';
 import { configureNotifications } from '@/services/notifications';
 import { useAppStore } from '@/store/app';
 import { ThemeProvider, useTheme } from '@/theme';
@@ -32,27 +32,23 @@ export default function RootLayout() {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      try {
-        warnIfMissing();
-        configureNotifications();
-        initI18n(useAppStore.getState().language);
-        await hydratePremiumFromCache();
-        await Promise.all([
-          signInAnonymouslyIfNeeded(),
-          configureIap(),
-          initAds(),
-        ]);
-        if (FORCE_PREMIUM_FOR_TESTING) {
-          useAppStore.getState().setPremium(true);
-        }
-        void maybeShowInterstitialOnOpen();
-      } catch (e) {
-        if (__DEV__) console.warn('[boot] init step failed', e);
-      } finally {
-        if (mounted) {
-          setReady(true);
-          SplashScreen.hideAsync().catch(() => {});
-        }
+      // Each step wrapped individually so one failure doesn't take out the
+      // rest of bootstrap. Crashes here historically caused white-screen
+      // boots — defensive isolation is more important than tidy code.
+      try { warnIfMissing(); } catch (e) { if (__DEV__) console.warn('[boot] warnIfMissing', e); }
+      try { configureNotifications(); } catch (e) { if (__DEV__) console.warn('[boot] configureNotifications', e); }
+      try { initI18n(useAppStore.getState().language); } catch (e) { if (__DEV__) console.warn('[boot] initI18n', e); }
+      try { await hydratePremiumFromCache(); } catch (e) { if (__DEV__) console.warn('[boot] hydratePremiumFromCache', e); }
+      try { await signInAnonymouslyIfNeeded(); } catch (e) { if (__DEV__) console.warn('[boot] signInAnonymouslyIfNeeded', e); }
+      try { await configureIap(); } catch (e) { if (__DEV__) console.warn('[boot] configureIap', e); }
+      try { await initAds(); } catch (e) { if (__DEV__) console.warn('[boot] initAds', e); }
+      if (FORCE_PREMIUM_FOR_TESTING) {
+        try { useAppStore.getState().setPremium(true); } catch (e) { if (__DEV__) console.warn('[boot] setPremium', e); }
+      }
+      try { void maybeShowInterstitialOnOpen(); } catch (e) { if (__DEV__) console.warn('[boot] interstitial', e); }
+      if (mounted) {
+        setReady(true);
+        SplashScreen.hideAsync().catch(() => {});
       }
     })();
     return () => {
@@ -61,7 +57,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (ready) initI18n(language);
+    if (ready) setI18nLanguage(language);
   }, [language, ready]);
 
   if (!ready) return null;

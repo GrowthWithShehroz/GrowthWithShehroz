@@ -30,7 +30,7 @@ const config: ExpoConfig = {
     userInterfaceStyle: 'automatic',
     splash: {
           image: './assets/images/splash.png',
-          resizeMode: 'contain',
+          resizeMode: 'cover',
           backgroundColor: '#0F4C3A',
     },
     assetBundlePatterns: ['**/*'],

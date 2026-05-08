@@ -12,9 +12,11 @@ import { initAds } from '@/features/ads/client';
 import { maybeShowInterstitialOnOpen } from '@/features/ads/interstitial';
 import { signInAnonymouslyIfNeeded } from '@/features/auth/client';
 import { configureIap, hydratePremiumFromCache } from '@/features/iap/client';
+import { scheduleRollingWindow } from '@/features/notifications/scheduler';
 import { initI18n, setLanguage as setI18nLanguage } from '@/services/i18n';
-import { configureNotifications } from '@/services/notifications';
+import { configureNotifications, requestNotificationPermission } from '@/services/notifications';
 import { useAppStore } from '@/store/app';
+import { useUserStore } from '@/store/user';
 import { ThemeProvider, useTheme } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -46,6 +48,26 @@ export default function RootLayout() {
         try { useAppStore.getState().setPremium(true); } catch (e) { if (__DEV__) console.warn('[boot] setPremium', e); }
       }
       try { void maybeShowInterstitialOnOpen(); } catch (e) { if (__DEV__) console.warn('[boot] interstitial', e); }
+      // Re-schedule prayer notifications on every cold start so the rolling
+      // 7-day window stays populated. Without this, notifications silently
+      // stop firing a week after the user last opened Settings.
+      try {
+        const settings = useUserStore.getState().settings;
+        const anyEnabled = Object.values(settings.prayerNotifications).some(Boolean);
+        if (settings.location && anyEnabled) {
+          const granted = await requestNotificationPermission();
+          if (granted) {
+            await scheduleRollingWindow({
+              coords: settings.location,
+              method: settings.calcMethod,
+              enabled: settings.prayerNotifications,
+              sound: `${settings.notificationSound}.mp3`,
+            });
+          }
+        }
+      } catch (e) {
+        if (__DEV__) console.warn('[boot] schedulePrayerNotifications', e);
+      }
       if (mounted) {
         setReady(true);
         SplashScreen.hideAsync().catch(() => {});

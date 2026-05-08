@@ -21,7 +21,7 @@ export function configureNotifications(): void {
     Notifications.setNotificationChannelAsync('prayer-times', {
       name: 'Prayer Times',
       importance: Notifications.AndroidImportance.HIGH,
-      sound: 'azan-default.mp3',
+      sound: 'azan_default.mp3',
       enableVibrate: true,
       bypassDnd: false,
       showBadge: false,

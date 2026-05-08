@@ -34,7 +34,7 @@ export default function SettingsScreen() {
   const { theme, spacing, radius, typography } = useTheme();
   const { theme: themePref, language, premium, setTheme, setLanguage } = useAppStore();
   const SOUNDS = [
-    { id: 'azan-default', label: t('settings.soundDefault') },
+    { id: 'azan_default', label: t('settings.soundDefault') },
     { id: 'silent', label: t('settings.soundSilent') },
   ];
   const settings = useUserStore((s) => s.settings);
@@ -70,7 +70,7 @@ export default function SettingsScreen() {
   };
 
   const handleSelectSound = (id: string) => {
-    if (id !== 'azan-default' && !premium) {
+    if (id !== 'azan_default' && !premium) {
       setPaywallVisible(true);
       return;
     }
@@ -210,7 +210,7 @@ export default function SettingsScreen() {
               label={s.label}
               selected={settings.notificationSound === s.id}
               onPress={() => handleSelectSound(s.id)}
-              locked={s.id !== 'azan-default' && !premium}
+              locked={s.id !== 'azan_default' && !premium}
             />
           ))}
         </Section>

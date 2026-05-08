@@ -49,7 +49,7 @@ export async function scheduleRollingWindow({
           content: {
             title: `${PRAYER_LABEL[p.name]} Prayer`,
             body: `It's time for ${PRAYER_LABEL[p.name]}.`,
-            sound: sound ?? 'azan-default.mp3',
+            sound: sound ?? 'azan_default.mp3',
             categoryIdentifier: 'prayer-times',
           },
           trigger: {

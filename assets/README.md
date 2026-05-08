@@ -10,11 +10,12 @@ Replace the following placeholders with real assets before running `eas build`:
 - `images/adaptive-icon.png` — 1024×1024 foreground for Android adaptive icon.
 - `images/splash.png` — Splash screen (1284×2778 recommended).
 - `images/notification-icon.png` — 96×96 monochrome PNG (Android system tints it).
-- `sounds/azan-default.mp3` — Default Azan notification sound. Must be valid MP3 placed at this path.
+- `sounds/azan_default.mp3` — Default Azan notification sound. Must be valid MP3 placed at this path.
+  (Filename must use only lowercase a-z, 0-9, and underscore — Android raw-resource rule.)
 
 Additional Azan sounds (premium feature):
 
-- `sounds/azan-makkah.mp3`, `sounds/azan-medina.mp3`, etc. After adding files,
+- `sounds/azan_makkah.mp3`, `sounds/azan_medina.mp3`, etc. After adding files,
   list their IDs in `app/(tabs)/settings.tsx` SOUNDS array and in
   `app.config.ts` plugins.expo-notifications.sounds.
 

@@ -78,7 +78,7 @@ const config: ExpoConfig = {
                       icon: './assets/images/notification-icon.png',
                       color: '#0F4C3A',
                       defaultChannel: 'default',
-                      sounds: ['./assets/sounds/azan-default.mp3'],
+                      sounds: ['./assets/sounds/azan_default.mp3'],
             },
                 ],
           [

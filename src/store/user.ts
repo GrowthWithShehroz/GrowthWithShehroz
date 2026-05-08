@@ -28,7 +28,7 @@ const initialSettings: UserSettings = {
   language: 'en',
   theme: 'system',
   calcMethod: 'Karachi',
-  notificationSound: 'azan-default',
+  notificationSound: 'azan_default',
   prayerNotifications: defaultPrayerNotifications,
   timezone: 'UTC',
 };

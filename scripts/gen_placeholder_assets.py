@@ -5,7 +5,7 @@ Outputs:
   assets/images/adaptive-icon.png    1024x1024  foreground for Android adaptive (safe-zone padded)
   assets/images/splash.png           1284x2778  centered splash with logo + wordmark
   assets/images/notification-icon.png  96x96    monochrome silhouette for status bar
-  assets/sounds/azan-default.mp3     short silent placeholder
+  assets/sounds/azan_default.mp3     short silent placeholder
 
 Design language:
   - Islamic green background with subtle radial gradient (depth without distraction)
@@ -351,6 +351,6 @@ if __name__ == "__main__":
     make_splash(IMG / "splash.png", 1284, 2778)
     make_notification_icon(IMG / "notification-icon.png", 96)
     make_feature_graphic(IMG / "feature-graphic.png", 1024, 500)
-    if not (SND / "azan-default.mp3").exists():
-        make_silent_mp3(SND / "azan-default.mp3", 1.0)
+    if not (SND / "azan_default.mp3").exists():
+        make_silent_mp3(SND / "azan_default.mp3", 1.0)
     print("done.")

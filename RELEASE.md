@@ -95,7 +95,7 @@ publicly listing the app, replace:
       OK)
 - [ ] `assets/images/splash.png` — 1284×2778 PNG, content centered
 - [ ] `assets/images/notification-icon.png` — 96×96 white-on-transparent
-- [ ] `assets/sounds/azan-default.mp3` — a properly licensed azan mp3 (≤ 30s,
+- [ ] `assets/sounds/azan_default.mp3` — a properly licensed azan mp3 (≤ 30s,
       ≤ 1 MB recommended)
 
 After replacing, rebuild: `eas build -p android --profile production`.

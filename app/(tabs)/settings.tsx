@@ -1,6 +1,8 @@
+import Constants from 'expo-constants';
+import * as Linking from 'expo-linking';
 import * as Localization from 'expo-localization';
 import React, { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AdBanner } from '@/components/AdBanner';
@@ -79,6 +81,36 @@ export default function SettingsScreen() {
       else Alert.alert('No subscription', 'No active subscription found.');
     } finally {
       setBusy(false);
+    }
+  };
+
+  const handleSendFeedback = async () => {
+    const version = Constants.expoConfig?.version ?? 'unknown';
+    const buildVersion =
+      (Constants.expoConfig as any)?.android?.versionCode ?? 'unknown';
+    const subject = `Feedback — Islamic Daily Wisdom v${version} (${buildVersion})`;
+    const body =
+      `Salaam,\n\n[Type your feedback here]\n\n---\n` +
+      `Platform: ${Platform.OS} ${Platform.Version}\n` +
+      `App version: ${version} (build ${buildVersion})\n`;
+    const mailto = `mailto:growthwithshehroz.app@gmail.com?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+    try {
+      const can = await Linking.canOpenURL(mailto);
+      if (can) {
+        await Linking.openURL(mailto);
+      } else {
+        Alert.alert(
+          'Email app not found',
+          'Install Gmail (or any email app) to send feedback. Or write to growthwithshehroz.app@gmail.com',
+        );
+      }
+    } catch (e) {
+      Alert.alert(
+        'Could not open email',
+        'Write to growthwithshehroz.app@gmail.com directly with your feedback.',
+      );
     }
   };
 
@@ -241,6 +273,31 @@ export default function SettingsScreen() {
           />
           <Text style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}>
             Toggle individual prayers in the Prayers tab.
+          </Text>
+        </Section>
+
+        <Section title="Feedback">
+          <Pressable
+            onPress={handleSendFeedback}
+            style={({ pressed }) => [
+              {
+                paddingHorizontal: spacing.lg,
+                paddingVertical: spacing.md,
+                backgroundColor: theme.primary,
+                borderRadius: radius.md,
+                alignSelf: 'flex-start',
+                opacity: pressed ? 0.85 : 1,
+              },
+            ]}
+          >
+            <Text style={[typography.h3, { color: '#fff' }]}>
+              Send feedback
+            </Text>
+          </Pressable>
+          <Text
+            style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}
+          >
+            Found a bug or have a suggestion? We'd love to hear from you.
           </Text>
         </Section>
 

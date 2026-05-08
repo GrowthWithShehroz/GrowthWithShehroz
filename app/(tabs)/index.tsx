@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type ViewShot from 'react-native-view-shot';
@@ -47,15 +48,20 @@ export default function HomeScreen() {
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
 
-  useEffect(() => {
-    let mounted = true;
-    computeStreak(tz).then((s) => {
-      if (mounted) setStreak(s);
-    });
-    return () => {
-      mounted = false;
-    };
-  }, [tz]);
+  // Recompute streak every time the Home tab regains focus, not only when
+  // tz changes — otherwise marking prayers complete on the Prayers tab
+  // and returning here leaves the streak stale.
+  useFocusEffect(
+    useCallback(() => {
+      let mounted = true;
+      computeStreak(tz).then((s) => {
+        if (mounted) setStreak(s);
+      });
+      return () => {
+        mounted = false;
+      };
+    }, [tz]),
+  );
 
   useEffect(() => {
     if (gate.canView && wisdom.data) {

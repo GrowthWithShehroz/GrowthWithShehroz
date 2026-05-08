@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,15 +16,8 @@ import { useUserStore } from '@/store/user';
 import { useTheme } from '@/theme';
 import { PRAYER_NAMES, type PrayerCompletion, type PrayerName } from '@/types';
 
-const LABELS: Record<PrayerName, string> = {
-  fajr: 'Fajr',
-  dhuhr: 'Dhuhr',
-  asr: 'Asr',
-  maghrib: 'Maghrib',
-  isha: 'Isha',
-};
-
 export default function PrayersScreen() {
+  const { t } = useTranslation();
   const { theme, spacing, typography } = useTheme();
   const { times, date } = useTodayPrayerTimes();
   const settings = useUserStore((s) => s.settings);
@@ -68,15 +62,15 @@ export default function PrayersScreen() {
     return (
       <SafeAreaView style={[styles.flex, { backgroundColor: theme.bg }]}>
         <EmptyState
-          title="Location needed"
-          subtitle="Open Settings → Location to compute today's prayer times."
+          title={t('prayers.locationNeededTitle')}
+          subtitle={t('prayers.locationNeededSubtitle')}
         />
       </SafeAreaView>
     );
   }
 
   if (times.length === 0) {
-    return <LoadingState label="Calculating prayer times" />;
+    return <LoadingState label={t('prayers.calculating')} />;
   }
 
   const currentPrayer = findCurrentPrayer(times);
@@ -85,20 +79,20 @@ export default function PrayersScreen() {
     <SafeAreaView style={[styles.flex, { backgroundColor: theme.bg }]} edges={['bottom']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
         <Text style={[typography.h1, { color: theme.text, marginBottom: spacing.xs }]}>
-          Today's Prayers
+          {t('prayers.title')}
         </Text>
         <Text style={[typography.bodySmall, { color: theme.textSoft, marginBottom: spacing.lg }]}>
-          {settings.location.label ?? 'Current location'} · {settings.calcMethod}
+          {settings.location.label ?? t('settings.location')} · {settings.calcMethod}
         </Text>
         {PRAYER_NAMES.map((name) => {
-          const t = times.find((p) => p.name === name);
-          if (!t) return null;
+          const pt = times.find((p) => p.name === name);
+          if (!pt) return null;
           return (
             <PrayerRow
               key={name}
               name={name}
-              label={LABELS[name]}
-              time={t.time}
+              label={t(`prayers.${name}`)}
+              time={pt.time}
               notify={settings.prayerNotifications[name]}
               completed={completion ? completion[name] : false}
               upcoming={currentPrayer === name}

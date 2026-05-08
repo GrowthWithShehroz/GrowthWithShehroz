@@ -1,6 +1,7 @@
 import * as Localization from 'expo-localization';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,6 +17,7 @@ const STEPS: StepId[] = ['welcome', 'location', 'notifications'];
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   const setOnboarded = useAppStore((s) => s.setOnboarded);
   const setLocation = useUserStore((s) => s.setLocation);
@@ -44,8 +46,8 @@ export default function OnboardingScreen() {
       const result = await requestAndGetLocation();
       if (!result) {
         Alert.alert(
-          'Location unavailable',
-          'You can set your location later in Settings.',
+          t('onboarding.locationUnavailableTitle'),
+          t('onboarding.locationUnavailableBody'),
         );
         return;
       }
@@ -65,8 +67,8 @@ export default function OnboardingScreen() {
       setNotificationsEnabled(granted);
       if (!granted) {
         Alert.alert(
-          'Notifications disabled',
-          'You can enable Azan reminders later in Settings.',
+          t('onboarding.notifDisabledTitle'),
+          t('onboarding.notifDisabledBody'),
         );
         return;
       }
@@ -104,11 +106,9 @@ export default function OnboardingScreen() {
       <View style={[styles.body, { paddingHorizontal: spacing.xl }]}>
         {step === 'welcome' ? (
           <View style={styles.card}>
-            <Text style={[styles.bigArabic, { color: theme.accent }]}>
-              ﷽
-            </Text>
+            <Text style={[styles.bigArabic, { color: theme.accent }]}>﷽</Text>
             <Text style={[typography.h1, { color: theme.text, textAlign: 'center', marginTop: spacing.lg }]}>
-              Welcome
+              {t('onboarding.welcomeTitle')}
             </Text>
             <Text
               style={[
@@ -116,18 +116,16 @@ export default function OnboardingScreen() {
                 { color: theme.textSoft, textAlign: 'center', marginTop: spacing.md, lineHeight: 24 },
               ]}
             >
-              Islamic Daily Wisdom brings you a Quranic verse each day, accurate
-              prayer times, and gentle Azan reminders — built with care, ad-free
-              for Premium users, and respectful of your privacy.
+              {t('onboarding.welcomeBody')}
             </Text>
           </View>
         ) : null}
 
         {step === 'location' ? (
           <View style={styles.card}>
-            <Text style={[styles.bigEmoji]}>📍</Text>
+            <Text style={styles.bigEmoji}>📍</Text>
             <Text style={[typography.h1, { color: theme.text, textAlign: 'center', marginTop: spacing.lg }]}>
-              Set your location
+              {t('onboarding.locationTitle')}
             </Text>
             <Text
               style={[
@@ -135,9 +133,7 @@ export default function OnboardingScreen() {
                 { color: theme.textSoft, textAlign: 'center', marginTop: spacing.md, lineHeight: 24 },
               ]}
             >
-              We use your location only to compute accurate prayer times.
-              Coordinates stay on your device — they're never sent to our
-              servers.
+              {t('onboarding.locationBody')}
             </Text>
 
             {locationLabel ? (
@@ -153,7 +149,7 @@ export default function OnboardingScreen() {
                 }}
               >
                 <Text style={[typography.body, { color: theme.success, textAlign: 'center' }]}>
-                  ✓ Location set: {locationLabel}
+                  ✓ {t('onboarding.locationSuccess', { label: locationLabel })}
                 </Text>
               </View>
             ) : (
@@ -172,7 +168,7 @@ export default function OnboardingScreen() {
                 ]}
               >
                 <Text style={[typography.h3, { color: '#fff', textAlign: 'center' }]}>
-                  {busy ? 'Detecting…' : 'Detect my location'}
+                  {busy ? t('onboarding.locationDetecting') : t('onboarding.locationCta')}
                 </Text>
               </Pressable>
             )}
@@ -181,9 +177,9 @@ export default function OnboardingScreen() {
 
         {step === 'notifications' ? (
           <View style={styles.card}>
-            <Text style={[styles.bigEmoji]}>🔔</Text>
+            <Text style={styles.bigEmoji}>🔔</Text>
             <Text style={[typography.h1, { color: theme.text, textAlign: 'center', marginTop: spacing.lg }]}>
-              Azan reminders
+              {t('onboarding.notifTitle')}
             </Text>
             <Text
               style={[
@@ -191,8 +187,7 @@ export default function OnboardingScreen() {
                 { color: theme.textSoft, textAlign: 'center', marginTop: spacing.md, lineHeight: 24 },
               ]}
             >
-              Get a gentle local notification at each of the five daily prayers.
-              You can toggle individual prayers in the Prayers tab anytime.
+              {t('onboarding.notifBody')}
             </Text>
 
             {notificationsEnabled ? (
@@ -208,7 +203,7 @@ export default function OnboardingScreen() {
                 }}
               >
                 <Text style={[typography.body, { color: theme.success, textAlign: 'center' }]}>
-                  ✓ Notifications enabled
+                  ✓ {t('onboarding.notifSuccess')}
                 </Text>
               </View>
             ) : (
@@ -227,7 +222,7 @@ export default function OnboardingScreen() {
                 ]}
               >
                 <Text style={[typography.h3, { color: '#fff', textAlign: 'center' }]}>
-                  {busy ? 'Asking…' : 'Enable notifications'}
+                  {busy ? t('onboarding.notifAsking') : t('onboarding.notifCta')}
                 </Text>
               </Pressable>
             )}
@@ -248,13 +243,13 @@ export default function OnboardingScreen() {
           ]}
         >
           <Text style={[typography.h3, { color: '#000', textAlign: 'center' }]}>
-            {stepIndex === STEPS.length - 1 ? 'Get started' : 'Continue'}
+            {stepIndex === STEPS.length - 1 ? t('common.getStarted') : t('common.continue')}
           </Text>
         </Pressable>
         {stepIndex < STEPS.length - 1 ? (
           <Pressable onPress={finish} style={{ marginTop: spacing.md }} hitSlop={8}>
             <Text style={[typography.bodySmall, { color: theme.textSoft, textAlign: 'center' }]}>
-              Skip — set up later in Settings
+              {t('onboarding.skipLink')}
             </Text>
           </Pressable>
         ) : null}

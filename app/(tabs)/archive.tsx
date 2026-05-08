@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -14,6 +15,7 @@ import { useTheme } from '@/theme';
 import type { WisdomCard as WisdomCardType } from '@/types';
 
 export default function ArchiveScreen() {
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   const premium = useAppStore((s) => s.premium);
   const { data, isLoading, isError, refetch } = useWisdomArchive(60);
@@ -37,12 +39,12 @@ export default function ArchiveScreen() {
       <SafeAreaView style={[styles.flex, { backgroundColor: theme.bg }]}>
         <View style={[styles.locked, { padding: spacing.xl }]}>
           <Text style={[typography.h1, { color: theme.text, textAlign: 'center' }]}>
-            Wisdom Archive
+            {t('archive.lockedTitle')}
           </Text>
           <Text
             style={[typography.body, { color: theme.textSoft, textAlign: 'center', marginTop: spacing.md }]}
           >
-            Browse and favorite past wisdom cards. Unlock with Premium.
+            {t('archive.lockedSubtitle')}
           </Text>
           <Pressable
             onPress={() => setPaywallVisible(true)}
@@ -57,7 +59,7 @@ export default function ArchiveScreen() {
               },
             ]}
           >
-            <Text style={[typography.h3, { color: '#fff' }]}>Unlock Premium</Text>
+            <Text style={[typography.h3, { color: '#fff' }]}>{t('home.unlockPremium')}</Text>
           </Pressable>
         </View>
         <PaywallSheet visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
@@ -71,7 +73,7 @@ export default function ArchiveScreen() {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Search by Surah, translation, reflection"
+          placeholder={t('archive.search')}
           placeholderTextColor={theme.textSoft}
           style={[
             styles.search,
@@ -90,9 +92,9 @@ export default function ArchiveScreen() {
       {isLoading ? (
         <LoadingState />
       ) : isError ? (
-        <ErrorState message="Could not load archive." onRetry={() => refetch()} />
+        <ErrorState message={t('archive.couldNotLoad')} onRetry={() => refetch()} />
       ) : filtered.length === 0 ? (
-        <EmptyState title="No matches" />
+        <EmptyState title={t('archive.noMatches')} />
       ) : (
         <FlatList
           contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: spacing.xl }}

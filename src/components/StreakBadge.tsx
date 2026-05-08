@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 
 export function StreakBadge({ current, longest }: { current: number; longest: number }) {
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   return (
     <View
@@ -18,15 +20,15 @@ export function StreakBadge({ current, longest }: { current: number; longest: nu
         },
       ]}
     >
-      <Text style={[typography.label, { color: theme.accent }]}>STREAK</Text>
+      <Text style={[typography.label, { color: theme.accent }]}>{t('streak.label')}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: spacing.xs }}>
         <Text style={[typography.display, { color: theme.text }]}>{current}</Text>
         <Text style={[typography.body, { color: theme.textSoft, marginLeft: spacing.sm }]}>
-          day{current === 1 ? '' : 's'}
+          {t('streak.days', { count: current })}
         </Text>
       </View>
       <Text style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}>
-        Longest: {longest}
+        {t('streak.longest', { n: longest })}
       </Text>
     </View>
   );

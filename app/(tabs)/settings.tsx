@@ -2,6 +2,7 @@ import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import * as Localization from 'expo-localization';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -28,14 +29,14 @@ const CALC_METHODS: CalcMethod[] = [
   'Singapore',
 ];
 
-const SOUNDS = [
-  { id: 'azan-default', label: 'Default Azan' },
-  { id: 'silent', label: 'Silent (vibration only)' },
-];
-
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   const { theme: themePref, language, premium, setTheme, setLanguage } = useAppStore();
+  const SOUNDS = [
+    { id: 'azan-default', label: t('settings.soundDefault') },
+    { id: 'silent', label: t('settings.soundSilent') },
+  ];
   const settings = useUserStore((s) => s.settings);
   const setLocation = useUserStore((s) => s.setLocation);
   const setCalcMethod = useUserStore((s) => s.setCalcMethod);
@@ -48,7 +49,10 @@ export default function SettingsScreen() {
     try {
       const result = await requestAndGetLocation();
       if (!result) {
-        Alert.alert('Location unavailable', 'Could not detect your location.');
+        Alert.alert(
+          t('onboarding.locationUnavailableTitle'),
+          t('onboarding.locationUnavailableBody'),
+        );
         return;
       }
       setLocation(result.coords, result.label);
@@ -77,8 +81,8 @@ export default function SettingsScreen() {
     setBusy(true);
     try {
       const ok = await restorePurchases();
-      if (ok) Alert.alert('Restored', 'Premium has been restored.');
-      else Alert.alert('No subscription', 'No active subscription found.');
+      if (ok) Alert.alert(t('settings.restoredTitle'), t('settings.restoredBody'));
+      else Alert.alert(t('settings.noSubTitle'), t('settings.noSubBody'));
     } finally {
       setBusy(false);
     }
@@ -101,42 +105,30 @@ export default function SettingsScreen() {
       if (can) {
         await Linking.openURL(mailto);
       } else {
-        Alert.alert(
-          'Email app not found',
-          'Install Gmail (or any email app) to send feedback. Or write to growthwithshehroz.app@gmail.com',
-        );
+        Alert.alert(t('settings.emailMissingTitle'), t('settings.emailMissingBody'));
       }
     } catch (e) {
-      Alert.alert(
-        'Could not open email',
-        'Write to growthwithshehroz.app@gmail.com directly with your feedback.',
-      );
+      Alert.alert(t('settings.emailFailTitle'), t('settings.emailFailBody'));
     }
   };
 
   const handleDeleteData = () => {
     Alert.alert(
-      'Delete all my data?',
-      'This will permanently remove your prayer history, streak, favorites, and settings — both on this device and from the cloud. This cannot be undone.',
+      t('settings.deleteConfirmTitle'),
+      t('settings.deleteConfirmBody'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete everything',
+          text: t('settings.deleteConfirmCta'),
           style: 'destructive',
           onPress: async () => {
             setBusy(true);
             const result = await deleteAllUserData();
             setBusy(false);
             if (result.ok) {
-              Alert.alert(
-                'Data deleted',
-                'Your data has been removed. Please close and reopen the app.',
-              );
+              Alert.alert(t('settings.deleteSuccessTitle'), t('settings.deleteSuccessBody'));
             } else {
-              Alert.alert(
-                'Could not finish',
-                'Some data may not have been deleted. Check your connection and try again.',
-              );
+              Alert.alert(t('settings.deleteFailTitle'), t('settings.deleteFailBody'));
             }
           },
         },
@@ -147,7 +139,7 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: theme.bg }]} edges={['bottom']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <Section title="Premium">
+        <Section title={t('settings.premium')}>
           {premium ? (
             <PremiumBadge />
           ) : (
@@ -164,20 +156,20 @@ export default function SettingsScreen() {
                 },
               ]}
             >
-              <Text style={[typography.h3, { color: '#fff' }]}>Upgrade to Premium</Text>
+              <Text style={[typography.h3, { color: '#fff' }]}>{t('settings.upgradeToPremium')}</Text>
             </Pressable>
           )}
           <Pressable onPress={handleRestore} disabled={busy} style={{ marginTop: spacing.sm }}>
-            <Text style={[typography.body, { color: theme.textSoft }]}>Restore purchases</Text>
+            <Text style={[typography.body, { color: theme.textSoft }]}>{t('settings.restore')}</Text>
           </Pressable>
         </Section>
 
-        <Section title="Location">
+        <Section title={t('settings.location')}>
           <Text style={[typography.body, { color: theme.text }]}>
             {settings.location?.label ??
               (settings.location
                 ? `${settings.location.latitude.toFixed(2)}, ${settings.location.longitude.toFixed(2)}`
-                : 'Not set')}
+                : t('settings.notSet'))}
           </Text>
           <Pressable
             onPress={handleLocationDetect}
@@ -195,12 +187,12 @@ export default function SettingsScreen() {
             ]}
           >
             <Text style={[typography.h3, { color: '#fff' }]}>
-              {settings.location ? 'Update location' : 'Detect location'}
+              {settings.location ? t('settings.update') : t('settings.detect')}
             </Text>
           </Pressable>
         </Section>
 
-        <Section title="Prayer calculation method">
+        <Section title={t('settings.calcMethod')}>
           {CALC_METHODS.map((m) => (
             <SelectableRow
               key={m}
@@ -211,7 +203,7 @@ export default function SettingsScreen() {
           ))}
         </Section>
 
-        <Section title="Notification sound">
+        <Section title={t('settings.sound')}>
           {SOUNDS.map((s) => (
             <SelectableRow
               key={s.id}
@@ -223,22 +215,22 @@ export default function SettingsScreen() {
           ))}
         </Section>
 
-        <Section title="Theme">
-          {(['system', 'light', 'dark'] as const).map((t) => (
+        <Section title={t('settings.theme')}>
+          {(['system', 'light', 'dark'] as const).map((mode) => (
             <SelectableRow
-              key={t}
-              label={t.charAt(0).toUpperCase() + t.slice(1)}
-              selected={themePref === t}
-              onPress={() => setTheme(t)}
+              key={mode}
+              label={t(`settings.theme${mode.charAt(0).toUpperCase() + mode.slice(1)}` as 'settings.themeSystem')}
+              selected={themePref === mode}
+              onPress={() => setTheme(mode)}
             />
           ))}
         </Section>
 
-        <Section title="Language">
+        <Section title={t('settings.language')}>
           {(['en', 'ur'] as const).map((l) => (
             <SelectableRow
               key={l}
-              label={l === 'en' ? 'English' : 'اردو (Urdu)'}
+              label={l === 'en' ? t('settings.languageEn') : t('settings.languageUr')}
               selected={language === l}
               onPress={() => {
                 setLanguage(l);
@@ -248,7 +240,7 @@ export default function SettingsScreen() {
           ))}
         </Section>
 
-        <Section title="Notifications">
+        <Section title={t('settings.notifications')}>
           <Switch
             value={Object.values(settings.prayerNotifications).every(Boolean)}
             onValueChange={async (v) => {
@@ -272,11 +264,11 @@ export default function SettingsScreen() {
             thumbColor="#fff"
           />
           <Text style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}>
-            Toggle individual prayers in the Prayers tab.
+            {t('settings.notifHelp')}
           </Text>
         </Section>
 
-        <Section title="Feedback">
+        <Section title={t('settings.feedback')}>
           <Pressable
             onPress={handleSendFeedback}
             style={({ pressed }) => [
@@ -291,17 +283,17 @@ export default function SettingsScreen() {
             ]}
           >
             <Text style={[typography.h3, { color: '#fff' }]}>
-              Send feedback
+              {t('settings.sendFeedback')}
             </Text>
           </Pressable>
           <Text
             style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}
           >
-            Found a bug or have a suggestion? We'd love to hear from you.
+            {t('settings.feedbackHelp')}
           </Text>
         </Section>
 
-        <Section title="Privacy & data">
+        <Section title={t('settings.privacyData')}>
           <Pressable
             onPress={handleDeleteData}
             disabled={busy}
@@ -319,11 +311,11 @@ export default function SettingsScreen() {
             ]}
           >
             <Text style={[typography.body, { color: theme.error }]}>
-              Delete all my data
+              {t('settings.deleteData')}
             </Text>
           </Pressable>
           <Text style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}>
-            Removes your prayer history, streak, favorites, and settings on this device and in the cloud.
+            {t('settings.deleteHelp')}
           </Text>
         </Section>
       </ScrollView>
@@ -361,6 +353,7 @@ function SelectableRow({
   onPress: () => void;
   locked?: boolean;
 }) {
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   return (
     <Pressable
@@ -382,7 +375,7 @@ function SelectableRow({
     >
       <Text style={[typography.body, { color: selected ? '#fff' : theme.text }]}>{label}</Text>
       {locked ? (
-        <Text style={[typography.label, { color: theme.accent }]}>PREMIUM</Text>
+        <Text style={[typography.label, { color: theme.accent }]}>{t('settings.premiumOnly')}</Text>
       ) : null}
     </Pressable>
   );

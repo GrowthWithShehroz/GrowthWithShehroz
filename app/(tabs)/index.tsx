@@ -1,5 +1,6 @@
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type ViewShot from 'react-native-view-shot';
@@ -23,15 +24,8 @@ import { useAppStore } from '@/store/app';
 import { useUserStore } from '@/store/user';
 import { useTheme } from '@/theme';
 
-const PRAYER_LABELS: Record<string, string> = {
-  fajr: 'Fajr',
-  dhuhr: 'Dhuhr',
-  asr: 'Asr',
-  maghrib: 'Maghrib',
-  isha: 'Isha',
-};
-
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   const cardRef = useRef<ViewShot>(null);
   const language = useAppStore((s) => s.language);
@@ -88,14 +82,14 @@ export default function HomeScreen() {
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
             {next ? (
-              <CountdownTimer ms={countdownMs} label={`Next: ${PRAYER_LABELS[next.name] ?? next.name}`} />
+              <CountdownTimer ms={countdownMs} label={t('home.nextPrayer', { name: t(`prayers.${next.name}`) })} />
             ) : !location ? (
               <Text style={[typography.body, { color: theme.textSoft }]}>
-                Set your location in Settings to see prayer times.
+                {t('home.locationNeeded')}
               </Text>
             ) : (
               <Text style={[typography.body, { color: theme.textSoft }]}>
-                All prayers complete for today.
+                {t('home.allComplete')}
               </Text>
             )}
           </View>
@@ -104,10 +98,10 @@ export default function HomeScreen() {
 
         <View style={{ marginTop: spacing.xl }}>
           {wisdom.isLoading ? (
-            <LoadingState label="Loading today's wisdom" />
+            <LoadingState label={t('home.loadingWisdom')} />
           ) : wisdom.isError ? (
             <ErrorState
-              message="Could not load today's wisdom."
+              message={t('home.loadError')}
               onRetry={() => wisdom.refetch()}
             />
           ) : !gate.canView ? (
@@ -121,12 +115,12 @@ export default function HomeScreen() {
               }}
             >
               <Text style={[typography.h2, { color: theme.text, textAlign: 'center' }]}>
-                You've viewed today's wisdom.
+                {t('home.viewedToday')}
               </Text>
               <Text
                 style={[typography.body, { color: theme.textSoft, textAlign: 'center', marginTop: spacing.sm }]}
               >
-                Come back tomorrow, or unlock the full archive with Premium.
+                {t('home.comeBackTomorrow')}
               </Text>
               <Pressable
                 onPress={() => setPaywallVisible(true)}
@@ -141,14 +135,14 @@ export default function HomeScreen() {
                 ]}
               >
                 <Text style={[typography.h3, { color: '#fff', textAlign: 'center' }]}>
-                  Unlock Premium
+                  {t('home.unlockPremium')}
                 </Text>
               </Pressable>
             </View>
           ) : wisdom.data ? (
             <WisdomCard ref={cardRef} card={wisdom.data} language={language} />
           ) : (
-            <EmptyState title="No wisdom available" />
+            <EmptyState title={t('home.noWisdom')} />
           )}
         </View>
 
@@ -166,7 +160,7 @@ export default function HomeScreen() {
             ]}
           >
             <Text style={[typography.h3, { color: '#000', textAlign: 'center' }]}>
-              Share today's wisdom
+              {t('home.shareWisdom')}
             </Text>
           </Pressable>
         ) : null}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { isIapAvailable, purchasePremium, restorePurchases } from '@/features/iap/client';
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function PaywallSheet({ visible, onClose }: Props) {
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,10 +22,9 @@ export function PaywallSheet({ visible, onClose }: Props) {
     try {
       const ok = await purchasePremium();
       if (ok) onClose();
-      else if (!isIapAvailable())
-        setError('In-app purchases are not available in this build. Use a development build with RevenueCat configured.');
+      else if (!isIapAvailable()) setError(t('paywall.errorUnavailable'));
     } catch {
-      setError('Purchase failed. Please try again.');
+      setError(t('paywall.errorFailed'));
     } finally {
       setBusy(false);
     }
@@ -35,7 +36,7 @@ export function PaywallSheet({ visible, onClose }: Props) {
     try {
       const ok = await restorePurchases();
       if (ok) onClose();
-      else setError('No active subscription to restore.');
+      else setError(t('paywall.errorNoSub'));
     } finally {
       setBusy(false);
     }
@@ -51,18 +52,18 @@ export function PaywallSheet({ visible, onClose }: Props) {
           ]}
         >
           <Text style={[typography.h1, { color: theme.text, textAlign: 'center' }]}>
-            Unlock Premium
+            {t('paywall.title')}
           </Text>
           <Text
             style={[typography.body, { color: theme.textSoft, textAlign: 'center', marginTop: spacing.sm }]}
           >
-            Support development. Get an ad-free experience.
+            {t('paywall.subtitle')}
           </Text>
 
           <View style={{ marginTop: spacing.xl }}>
-            <Bullet text="Remove all ads" />
-            <Bullet text="Unlock the wisdom archive" />
-            <Bullet text="Custom Azan notification sounds" />
+            <Bullet text={t('paywall.removeAds')} />
+            <Bullet text={t('paywall.unlockArchive')} />
+            <Bullet text={t('paywall.customSounds')} />
           </View>
 
           {error ? (
@@ -88,20 +89,20 @@ export function PaywallSheet({ visible, onClose }: Props) {
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={[typography.h3, { color: '#fff', textAlign: 'center' }]}>
-                Subscribe — $0.99 / month
+                {t('paywall.subscribe')}
               </Text>
             )}
           </Pressable>
 
           <Pressable onPress={handleRestore} disabled={busy} style={{ marginTop: spacing.md }}>
             <Text style={[typography.body, { color: theme.textSoft, textAlign: 'center' }]}>
-              Restore purchases
+              {t('paywall.restore')}
             </Text>
           </Pressable>
 
           <Pressable onPress={onClose} style={{ marginTop: spacing.md }}>
             <Text style={[typography.body, { color: theme.textSoft, textAlign: 'center' }]}>
-              Not now
+              {t('paywall.notNow')}
             </Text>
           </Pressable>
         </View>

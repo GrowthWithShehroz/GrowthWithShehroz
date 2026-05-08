@@ -108,7 +108,9 @@
     "emailMissingTitle": "Email app not found",
     "emailMissingBody": "Install Gmail (or any email app) to send feedback. Or write to growthwithshehroz.app@gmail.com",
     "emailFailTitle": "Could not open email",
-    "emailFailBody": "Write to growthwithshehroz.app@gmail.com directly with your feedback."
+    "emailFailBody": "Write to growthwithshehroz.app@gmail.com directly with your feedback.",
+    "restartTitle": "Restart required",
+    "restartBody": "Please close and reopen the app for the language layout direction to apply correctly."
   },
   "paywall": {
     "title": "Unlock Premium",
@@ -118,7 +120,28 @@
     "customSounds": "Custom Azan notification sounds",
     "subscribe": "Subscribe — $0.99 / month",
     "restore": "Restore purchases",
-    "notNow": "Not now"
+    "notNow": "Not now",
+    "errorUnavailable": "In-app purchases are not available in this build.",
+    "errorFailed": "Purchase failed. Please try again.",
+    "errorNoSub": "No active subscription to restore."
+  },
+  "share": {
+    "title": "Share wisdom",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram Stories",
+    "more": "More options",
+    "errorCaptureTitle": "Could not capture wisdom card",
+    "errorCaptureBody": "Please try again in a moment.",
+    "errorUnavailableTitle": "Sharing unavailable",
+    "errorUnavailableBody": "Sharing is not available on this device.",
+    "errorFailedTitle": "Share failed",
+    "errorFailedBody": "Could not open the share sheet. Try again, or use a different app.",
+    "dialogTitle": "Share daily wisdom"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "body": "The app encountered an unexpected error. Tap below to reload this screen.",
+    "tryAgain": "Try again"
   },
   "streak": {
     "label": "STREAK",

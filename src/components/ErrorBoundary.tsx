@@ -1,6 +1,8 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import i18n from '@/services/i18n';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -29,10 +31,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
       return (
         <View style={styles.root}>
           <ScrollView contentContainerStyle={styles.content}>
-            <Text style={styles.title}>Something went wrong</Text>
-            <Text style={styles.message}>
-              The app encountered an unexpected error. Tap below to reload this screen.
-            </Text>
+            <Text style={styles.title}>{i18n.t('errors.title')}</Text>
+            <Text style={styles.message}>{i18n.t('errors.body')}</Text>
             {__DEV__ ? (
               <Text style={styles.detail}>{this.state.error.message}</Text>
             ) : null}
@@ -40,7 +40,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
               onPress={this.reset}
               style={({ pressed }) => [styles.button, pressed && { opacity: 0.7 }]}
             >
-              <Text style={styles.buttonText}>Try again</Text>
+              <Text style={styles.buttonText}>{i18n.t('errors.tryAgain')}</Text>
             </Pressable>
           </ScrollView>
         </View>

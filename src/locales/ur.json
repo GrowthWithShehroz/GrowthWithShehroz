@@ -108,7 +108,9 @@
     "emailMissingTitle": "ای میل ایپ نہیں ملی",
     "emailMissingBody": "آراء بھیجنے کے لیے Gmail (یا کوئی ای میل ایپ) انسٹال کریں۔ یا براہ راست growthwithshehroz.app@gmail.com پر لکھیں۔",
     "emailFailTitle": "ای میل نہیں کھل سکی",
-    "emailFailBody": "براہ کرم growthwithshehroz.app@gmail.com پر براہ راست اپنی رائے بھیجیں۔"
+    "emailFailBody": "براہ کرم growthwithshehroz.app@gmail.com پر براہ راست اپنی رائے بھیجیں۔",
+    "restartTitle": "دوبارہ شروع کرنا ضروری",
+    "restartBody": "زبان کی ترتیب درست طریقے سے لاگو کرنے کے لیے براہ کرم ایپ بند کر کے دوبارہ کھولیں۔"
   },
   "paywall": {
     "title": "پریمیم کھولیں",
@@ -118,7 +120,28 @@
     "customSounds": "اذان کی مخصوص آوازیں",
     "subscribe": "سبسکرائب کریں — $0.99 / ماہ",
     "restore": "خریداریاں بحال کریں",
-    "notNow": "ابھی نہیں"
+    "notNow": "ابھی نہیں",
+    "errorUnavailable": "اس بلڈ میں ان ایپ خریداری دستیاب نہیں ہے۔",
+    "errorFailed": "خریداری ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
+    "errorNoSub": "بحال کرنے کے لیے کوئی فعال سبسکرپشن نہیں۔"
+  },
+  "share": {
+    "title": "حکمت شیئر کریں",
+    "whatsapp": "واٹس ایپ",
+    "instagram": "انسٹاگرام اسٹوریز",
+    "more": "مزید آپشنز",
+    "errorCaptureTitle": "حکمت کارڈ کیپچر نہیں ہو سکا",
+    "errorCaptureBody": "براہ کرم تھوڑی دیر بعد دوبارہ کوشش کریں۔",
+    "errorUnavailableTitle": "شیئرنگ دستیاب نہیں",
+    "errorUnavailableBody": "اس فون پر شیئرنگ دستیاب نہیں۔",
+    "errorFailedTitle": "شیئر ناکام",
+    "errorFailedBody": "شیئر شیٹ نہیں کھلی۔ دوبارہ کوشش کریں یا کوئی اور ایپ استعمال کریں۔",
+    "dialogTitle": "روزانہ کی حکمت شیئر کریں"
+  },
+  "errors": {
+    "title": "کچھ غلط ہو گیا",
+    "body": "ایپ میں غیر متوقع خرابی۔ اس اسکرین کو دوبارہ لوڈ کرنے کے لیے نیچے ٹیپ کریں۔",
+    "tryAgain": "دوبارہ کوشش کریں"
   },
   "streak": {
     "label": "تسلسل",

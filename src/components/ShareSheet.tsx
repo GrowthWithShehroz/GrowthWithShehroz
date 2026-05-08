@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { shareCard } from '@/features/share/capture';
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function ShareSheet({ visible, onClose, imageUri, caption }: Props) {
+  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   const [busy, setBusy] = useState(false);
 
@@ -38,22 +40,22 @@ export function ShareSheet({ visible, onClose, imageUri, caption }: Props) {
           onPress={() => {}}
         >
           <Text style={[typography.h2, { color: theme.text, marginBottom: spacing.lg }]}>
-            Share wisdom
+            {t('share.title')}
           </Text>
           <Row
-            label="WhatsApp"
+            label={t('share.whatsapp')}
             onPress={() => imageUri && run(() => shareToWhatsApp(imageUri, caption))}
           />
           <Row
-            label="Instagram Stories"
+            label={t('share.instagram')}
             onPress={() => imageUri && run(() => shareToInstagramStories(imageUri))}
           />
           <Row
-            label="More options"
+            label={t('share.more')}
             onPress={() => imageUri && run(() => shareCard(imageUri, caption))}
           />
           <Pressable onPress={onClose} style={{ alignSelf: 'center', marginTop: spacing.lg }}>
-            <Text style={[typography.h3, { color: theme.textSoft }]}>Cancel</Text>
+            <Text style={[typography.h3, { color: theme.textSoft }]}>{t('common.cancel')}</Text>
           </Pressable>
         </Pressable>
       </Pressable>

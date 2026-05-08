@@ -13,7 +13,7 @@ import { deleteAllUserData } from '@/features/auth/deleteData';
 import { scheduleRollingWindow, clearAllPrayerNotifications } from '@/features/notifications/scheduler';
 import { requestAndGetLocation } from '@/features/prayers/location';
 import { restorePurchases } from '@/features/iap/client';
-import { setLanguage as setI18nLanguage } from '@/services/i18n';
+import { applyRtlForLanguage, setLanguage as setI18nLanguage } from '@/services/i18n';
 import { useAppStore } from '@/store/app';
 import { useUserStore } from '@/store/user';
 import { useTheme } from '@/theme';
@@ -233,8 +233,16 @@ export default function SettingsScreen() {
               label={l === 'en' ? t('settings.languageEn') : t('settings.languageUr')}
               selected={language === l}
               onPress={() => {
+                if (language === l) return;
                 setLanguage(l);
                 setI18nLanguage(l);
+                const directionChanged = applyRtlForLanguage(l);
+                if (directionChanged) {
+                  Alert.alert(
+                    t('settings.restartTitle'),
+                    t('settings.restartBody'),
+                  );
+                }
               }}
             />
           ))}

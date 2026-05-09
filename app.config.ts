@@ -62,6 +62,15 @@ const config: ExpoConfig = {
           'expo-localization',
           ['./plugins/with-kotlin-version', '1.9.25'],
           [
+                  'expo-splash-screen',
+            {
+                      image: './assets/images/adaptive-icon.png',
+                      imageWidth: 360,
+                      backgroundColor: '#0F4C3A',
+                      resizeMode: 'contain',
+            },
+                ],
+          [
                   'expo-build-properties',
             {
                       android: {

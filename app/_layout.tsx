@@ -34,44 +34,46 @@ export default function RootLayout() {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      // Each step wrapped individually so one failure doesn't take out the
-      // rest of bootstrap. Crashes here historically caused white-screen
-      // boots — defensive isolation is more important than tidy code.
+      // CRITICAL PATH — wait only for fast, in-process work so the splash
+      // dismisses within ~200ms. Everything that touches the network or
+      // a sandboxed native module fires-and-forgets in the background.
       try { warnIfMissing(); } catch (e) { if (__DEV__) console.warn('[boot] warnIfMissing', e); }
       try { configureNotifications(); } catch (e) { if (__DEV__) console.warn('[boot] configureNotifications', e); }
       try { initI18n(useAppStore.getState().language); } catch (e) { if (__DEV__) console.warn('[boot] initI18n', e); }
       try { await hydratePremiumFromCache(); } catch (e) { if (__DEV__) console.warn('[boot] hydratePremiumFromCache', e); }
-      try { await signInAnonymouslyIfNeeded(); } catch (e) { if (__DEV__) console.warn('[boot] signInAnonymouslyIfNeeded', e); }
-      try { await configureIap(); } catch (e) { if (__DEV__) console.warn('[boot] configureIap', e); }
-      try { await initAds(); } catch (e) { if (__DEV__) console.warn('[boot] initAds', e); }
       if (FORCE_PREMIUM_FOR_TESTING) {
         try { useAppStore.getState().setPremium(true); } catch (e) { if (__DEV__) console.warn('[boot] setPremium', e); }
-      }
-      try { void maybeShowInterstitialOnOpen(); } catch (e) { if (__DEV__) console.warn('[boot] interstitial', e); }
-      // Re-schedule prayer notifications on every cold start so the rolling
-      // 7-day window stays populated. Without this, notifications silently
-      // stop firing a week after the user last opened Settings.
-      try {
-        const settings = useUserStore.getState().settings;
-        const anyEnabled = Object.values(settings.prayerNotifications).some(Boolean);
-        if (settings.location && anyEnabled) {
-          const granted = await requestNotificationPermission();
-          if (granted) {
-            await scheduleRollingWindow({
-              coords: settings.location,
-              method: settings.calcMethod,
-              enabled: settings.prayerNotifications,
-              sound: `${settings.notificationSound}.mp3`,
-            });
-          }
-        }
-      } catch (e) {
-        if (__DEV__) console.warn('[boot] schedulePrayerNotifications', e);
       }
       if (mounted) {
         setReady(true);
         SplashScreen.hideAsync().catch(() => {});
       }
+
+      // BACKGROUND — slow stuff. Splash is already gone; users can
+      // interact while these finish. Order is intentional: auth before
+      // anything that might depend on a user id; scheduling after auth
+      // so cloud-mirroring works on first prayer tick.
+      void (async () => {
+        try { await signInAnonymouslyIfNeeded(); } catch (e) { if (__DEV__) console.warn('[boot-bg] signIn', e); }
+        try { await configureIap(); } catch (e) { if (__DEV__) console.warn('[boot-bg] iap', e); }
+        try { await initAds(); } catch (e) { if (__DEV__) console.warn('[boot-bg] ads', e); }
+        try {
+          const settings = useUserStore.getState().settings;
+          const anyEnabled = Object.values(settings.prayerNotifications).some(Boolean);
+          if (settings.location && anyEnabled) {
+            const granted = await requestNotificationPermission();
+            if (granted) {
+              await scheduleRollingWindow({
+                coords: settings.location,
+                method: settings.calcMethod,
+                enabled: settings.prayerNotifications,
+                sound: `${settings.notificationSound}.mp3`,
+              });
+            }
+          }
+        } catch (e) { if (__DEV__) console.warn('[boot-bg] schedule', e); }
+        try { void maybeShowInterstitialOnOpen(); } catch (e) { if (__DEV__) console.warn('[boot-bg] interstitial', e); }
+      })();
     })();
     return () => {
       mounted = false;

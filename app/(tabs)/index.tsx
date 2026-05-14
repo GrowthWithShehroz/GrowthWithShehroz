@@ -37,7 +37,7 @@ export default function HomeScreen() {
   const wisdom = useDailyWisdom();
   const gate = useDailyGate();
 
-  const [streak, setStreak] = useState({ current: 0, longest: 0 });
+  const [streak, setStreak] = useState({ current: 0, longest: 0, todayCount: 0 });
   const [shareVisible, setShareVisible] = useState(false);
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -93,7 +93,11 @@ export default function HomeScreen() {
               </Text>
             )}
           </View>
-          <StreakBadge current={streak.current} longest={streak.longest} />
+          <StreakBadge
+            current={streak.current}
+            longest={streak.longest}
+            todayCount={streak.todayCount}
+          />
         </View>
 
         <View style={{ marginTop: spacing.xl }}>

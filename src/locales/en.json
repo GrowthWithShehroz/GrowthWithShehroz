@@ -147,6 +147,7 @@
     "label": "STREAK",
     "days_one": "day",
     "days_other": "days",
-    "longest": "Longest: {{n}}"
+    "longest": "Longest: {{n}}",
+    "today": "Today: {{n}}/5"
   }
 }

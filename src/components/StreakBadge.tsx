@@ -4,7 +4,15 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 
-export function StreakBadge({ current, longest }: { current: number; longest: number }) {
+export function StreakBadge({
+  current,
+  longest,
+  todayCount,
+}: {
+  current: number;
+  longest: number;
+  todayCount?: number;
+}) {
   const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   return (
@@ -27,6 +35,11 @@ export function StreakBadge({ current, longest }: { current: number; longest: nu
           {t('streak.days', { count: current })}
         </Text>
       </View>
+      {typeof todayCount === 'number' ? (
+        <Text style={[typography.bodySmall, { color: theme.accent, marginTop: spacing.xs }]}>
+          {t('streak.today', { n: todayCount })}
+        </Text>
+      ) : null}
       <Text style={[typography.bodySmall, { color: theme.textSoft, marginTop: spacing.xs }]}>
         {t('streak.longest', { n: longest })}
       </Text>

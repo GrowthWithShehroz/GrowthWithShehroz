@@ -106,9 +106,9 @@
     "noSubTitle": "No subscription",
     "noSubBody": "No active subscription found.",
     "emailMissingTitle": "Email app not found",
-    "emailMissingBody": "Install Gmail (or any email app) to send feedback. Or write to growthwithshehroz.app@gmail.com",
+    "emailMissingBody": "Install Gmail (or any email app) to send feedback. Or write to Shehroz@growthwithshehroz.com",
     "emailFailTitle": "Could not open email",
-    "emailFailBody": "Write to growthwithshehroz.app@gmail.com directly with your feedback.",
+    "emailFailBody": "Write to Shehroz@growthwithshehroz.com directly with your feedback.",
     "restartTitle": "Restart required",
     "restartBody": "Please close and reopen the app for the language layout direction to apply correctly."
   },

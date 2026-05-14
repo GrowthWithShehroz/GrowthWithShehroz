@@ -88,4 +88,4 @@ We will post any changes to this URL with a new "Last updated" date.
 ## 9. Contact
 
 For privacy questions or to request deletion of your anonymous data:
-**privacy@islamicdailywisdom.app** (replace before publishing).
+**Shehroz@growthwithshehroz.com**

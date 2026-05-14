@@ -97,7 +97,7 @@ export default function SettingsScreen() {
       `Salaam,\n\n[Type your feedback here]\n\n---\n` +
       `Platform: ${Platform.OS} ${Platform.Version}\n` +
       `App version: ${version} (build ${buildVersion})\n`;
-    const mailto = `mailto:growthwithshehroz.app@gmail.com?subject=${encodeURIComponent(
+    const mailto = `mailto:Shehroz@growthwithshehroz.com?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
     try {

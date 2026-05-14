@@ -79,7 +79,7 @@ support. Respectful, distraction-free typography. Built to feel calm.
 - Cancel anytime in Google Play → Subscriptions
 
 Built with care for the global Muslim community. Feedback welcome at
-privacy@islamicdailywisdom.app.
+Shehroz@growthwithshehroz.com.
 
 السَّلَامُ عَلَيْكُمْ — Peace be upon you.
 ```

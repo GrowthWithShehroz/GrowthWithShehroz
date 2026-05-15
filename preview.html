@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Islamic Daily Wisdom — Visual Preview</title>
+<meta name="viewport" content="width=1400" />
+<style>
+  :root {
+    --green: #0F4C3A;
+    --green-light: #1A6E55;
+    --green-dark: #082C22;
+    --gold: #D4AF37;
+    --gold-light: #E8C656;
+    --cream: #F8F4E9;
+    --ink: #0B1A14;
+    --ink-soft: #1F2D27;
+    --gray-200: #D6D6D6;
+    --gray-600: #5C5C5C;
+    --gray-800: #2A2A2A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #fff;
+    padding: 32px 16px;
+  }
+  h1 { text-align: center; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #999; margin-bottom: 32px; font-size: 14px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 360px);
+    gap: 32px;
+    justify-content: center;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .phone {
+    width: 360px;
+    height: 760px;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    border: 8px solid #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .phone .label-tag {
+    position: absolute;
+    top: -28px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+  /* Light theme */
+  .light { background: var(--cream); color: var(--ink); }
+  .light .surface { background: #fff; }
+  .light .border { border-color: var(--gray-200); }
+  .light .soft { color: var(--gray-600); }
+  /* Dark theme */
+  .dark { background: var(--green-dark); color: var(--cream); }
+  .dark .surface { background: var(--ink-soft); }
+  .dark .border { border-color: var(--gray-800); }
+  .dark .soft { color: var(--gray-200); }
+
+  .statusbar {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .light .statusbar { color: var(--ink); }
+  .dark .statusbar { color: var(--cream); }
+  .content {
+    flex: 1;
+    overflow: hidden;
+    padding: 16px;
+    position: relative;
+  }
+  .ad-banner {
+    height: 50px;
+    background: rgba(128,128,128,0.15);
+    border-top: 1px solid currentColor;
+    border-color: rgba(128,128,128,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: rgba(128,128,128,0.6);
+    letter-spacing: 1px;
+  }
+  .tabbar {
+    height: 56px;
+    display: flex;
+    border-top: 1px solid;
+    border-color: rgba(128,128,128,0.2);
+  }
+  .light .tabbar { background: #fff; }
+  .dark .tabbar { background: var(--ink-soft); }
+  .tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+    color: var(--gray-600);
+  }
+  .tab.active { color: var(--green); }
+  .dark .tab.active { color: var(--gold); }
+  .tab .icon { font-size: 18px; }
+
+  /* Home — countdown */
+  .countdown-row { display: flex; align-items: flex-start; gap: 12px; }
+  .countdown { flex: 1; }
+  .countdown .label { font-size: 11px; letter-spacing: 1px; opacity: 0.7; text-transform: uppercase; }
+  .countdown .time { font-size: 32px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .streak {
+    background: var(--gold);
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+  }
+  .streak .num { font-size: 22px; line-height: 1; }
+  .streak .lbl { font-size: 9px; letter-spacing: 0.5px; opacity: 0.85; }
+
+  /* Wisdom card */
+  .wisdom {
+    margin-top: 20px;
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .wisdom .rule {
+    width: 64px; height: 2px; background: var(--gold); margin: 0 auto 8px;
+  }
+  .wisdom .tag {
+    color: var(--gold); font-size: 11px; letter-spacing: 1.5px; font-weight: 700;
+  }
+  .wisdom .arabic {
+    font-family: 'Amiri', 'Scheherazade New', serif;
+    font-size: 22px;
+    line-height: 1.6;
+    margin: 18px 0 14px;
+    direction: rtl;
+  }
+  .wisdom .translation {
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .wisdom .divider {
+    height: 1px; background: rgba(128,128,128,0.3);
+    margin: 16px -8px;
+  }
+  .wisdom .reflection { font-size: 13px; line-height: 1.5; }
+  .wisdom .citation {
+    color: var(--gold); font-size: 11px; letter-spacing: 1px; font-weight: 700;
+    margin-top: 14px;
+  }
+  .wisdom .src { font-size: 10px; opacity: 0.6; margin-top: 4px; }
+  .share-btn {
+    margin-top: 18px;
+    background: var(--gold);
+    color: #000;
+    text-align: center;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  /* Prayers tab */
+  .prayer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px;
+    border: 1px solid;
+    border-color: rgba(128,128,128,0.25);
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  .prayer-row.next { border-color: var(--gold); border-width: 2px; }
+  .prayer-row.done { opacity: 0.6; }
+  .prayer-row .name { font-size: 16px; font-weight: 600; }
+  .prayer-row .time { font-size: 14px; opacity: 0.8; font-variant-numeric: tabular-nums; }
+  .prayer-row .check {
+    width: 28px; height: 28px; border-radius: 14px;
+    border: 2px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 16px;
+  }
+  .prayer-row.done .check { background: var(--gold); color: #000; }
+  .toggle {
+    width: 38px; height: 22px; border-radius: 11px;
+    background: rgba(128,128,128,0.3); position: relative;
+  }
+  .toggle.on { background: var(--gold); }
+  .toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 16px; height: 16px; border-radius: 8px; background: #fff;
+    transition: 0.2s;
+  }
+  .toggle.on::after { left: 19px; }
+
+  .section-title {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    opacity: 0.6;
+    margin: 18px 0 10px;
+    text-transform: uppercase;
+  }
+
+  /* Archive */
+  .search {
+    width: 100%;
+    border: 1px solid;
+    border-color: rgba(128,128,128,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    background: transparent;
+    color: inherit;
+    font-size: 14px;
+  }
+  .archive-card {
+    border: 1px solid;
+    border-color: rgba(128,128,128,0.25);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 8px;
+  }
+  .archive-card .info { flex: 1; }
+  .archive-card .ref { color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+  .archive-card .quote { font-style: italic; font-size: 13px; margin-top: 4px; }
+  .archive-card .reflection { font-size: 11px; opacity: 0.7; margin-top: 6px; }
+  .archive-card .star { color: var(--gold); font-size: 20px; }
+  .archive-card .star.empty { opacity: 0.25; }
+
+  /* Settings */
+  .row {
+    padding: 12px 14px;
+    border: 1px solid;
+    border-color: rgba(128,128,128,0.25);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .row.selected { background: var(--green); color: #fff; border-color: var(--green); }
+  .row .premium-tag { color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+  .btn {
+    padding: 12px 20px;
+    background: var(--green);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+  }
+  .btn-danger {
+    border: 1px solid #C0392B;
+    color: #C0392B;
+    background: transparent;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    display: inline-block;
+  }
+
+  .scrollable {
+    overflow-y: auto;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scrollable::-webkit-scrollbar { width: 0; }
+
+  .legend {
+    text-align: center;
+    margin-top: 32px;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<h1>Islamic Daily Wisdom</h1>
+<div class="subtitle">v1.0.0 · com.islamicdailywisdom.app · 4 screens · Light theme + Home dark</div>
+
+<div class="grid">
+
+  <!-- Home (light) -->
+  <div class="phone light">
+    <div class="label-tag">HOME</div>
+    <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+    <div class="content scrollable">
+      <div class="countdown-row">
+        <div class="countdown">
+          <div class="label soft">Next: Asr</div>
+          <div class="time">02:14:38</div>
+        </div>
+        <div class="streak">
+          <div class="num">7</div>
+          <div class="lbl">DAY 🔥</div>
+        </div>
+      </div>
+
+      <div class="wisdom">
+        <div class="rule"></div>
+        <div class="tag">DAILY WISDOM</div>
+        <div class="arabic">إِنَّ مَعَ الْعُسْرِ يُسْرًا</div>
+        <div class="translation soft">"Indeed, with hardship comes ease."</div>
+        <div class="divider"></div>
+        <div class="reflection">Difficulty and ease arrive together. Patience reveals what struggle conceals.</div>
+        <div class="citation">ASH-SHARH · 94:6</div>
+        <div class="src soft">Quran 94:6 — Sahih International</div>
+        <div class="rule" style="margin-top:14px"></div>
+      </div>
+
+      <div class="share-btn">Share today's wisdom</div>
+    </div>
+    <div class="ad-banner">— Ad —</div>
+    <div class="tabbar">
+      <div class="tab active"><span class="icon">🕌</span><span>Home</span></div>
+      <div class="tab"><span class="icon">🕐</span><span>Prayers</span></div>
+      <div class="tab"><span class="icon">📖</span><span>Archive</span></div>
+      <div class="tab"><span class="icon">⚙️</span><span>Settings</span></div>
+    </div>
+  </div>
+
+  <!-- Prayers -->
+  <div class="phone light">
+    <div class="label-tag">PRAYERS</div>
+    <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+    <div class="content scrollable">
+      <div class="section-title soft">TODAY · 30 APRIL</div>
+
+      <div class="prayer-row done">
+        <div>
+          <div class="name">Fajr</div>
+          <div class="time soft">04:42</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="toggle on"></div>
+          <div class="check">✓</div>
+        </div>
+      </div>
+
+      <div class="prayer-row done">
+        <div>
+          <div class="name">Dhuhr</div>
+          <div class="time soft">12:18</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="toggle on"></div>
+          <div class="check">✓</div>
+        </div>
+      </div>
+
+      <div class="prayer-row next">
+        <div>
+          <div class="name">Asr</div>
+          <div class="time" style="color:var(--gold);font-weight:700">15:54</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="toggle on"></div>
+          <div class="check">○</div>
+        </div>
+      </div>
+
+      <div class="prayer-row">
+        <div>
+          <div class="name">Maghrib</div>
+          <div class="time soft">18:36</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="toggle on"></div>
+          <div class="check">○</div>
+        </div>
+      </div>
+
+      <div class="prayer-row">
+        <div>
+          <div class="name">Isha</div>
+          <div class="time soft">20:02</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="toggle"></div>
+          <div class="check">○</div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-banner">— Ad —</div>
+    <div class="tabbar">
+      <div class="tab"><span class="icon">🕌</span><span>Home</span></div>
+      <div class="tab active"><span class="icon">🕐</span><span>Prayers</span></div>
+      <div class="tab"><span class="icon">📖</span><span>Archive</span></div>
+      <div class="tab"><span class="icon">⚙️</span><span>Settings</span></div>
+    </div>
+  </div>
+
+  <!-- Archive (premium unlocked view) -->
+  <div class="phone light">
+    <div class="label-tag">ARCHIVE (Premium)</div>
+    <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+    <div class="content scrollable">
+      <input class="search" placeholder="Search by Surah, translation, reflection" />
+      <div style="margin-top:14px"></div>
+
+      <div class="archive-card">
+        <div class="info">
+          <div class="ref">AL-BAQARAH · 2:286</div>
+          <div class="quote">"Allah does not burden a soul beyond that it can bear."</div>
+          <div class="reflection soft">Whatever you face today, it has been measured for your strength. Take the next small step.</div>
+        </div>
+        <div class="star">★</div>
+      </div>
+
+      <div class="archive-card">
+        <div class="info">
+          <div class="ref">ASH-SHARH · 94:6</div>
+          <div class="quote">"Indeed, with hardship comes ease."</div>
+          <div class="reflection soft">Difficulty and ease arrive together. Patience reveals what struggle conceals.</div>
+        </div>
+        <div class="star empty">★</div>
+      </div>
+
+      <div class="archive-card">
+        <div class="info">
+          <div class="ref">AT-TALAQ · 65:3</div>
+          <div class="quote">"And whoever relies upon Allah — then He is sufficient for him."</div>
+          <div class="reflection soft">Do your part with sincerity, then release the outcome.</div>
+        </div>
+        <div class="star">★</div>
+      </div>
+
+      <div class="archive-card">
+        <div class="info">
+          <div class="ref">AR-RA'D · 13:28</div>
+          <div class="quote">"Verily, in the remembrance of Allah do hearts find rest."</div>
+          <div class="reflection soft">When the mind is loud, return to remembrance.</div>
+        </div>
+        <div class="star empty">★</div>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tab"><span class="icon">🕌</span><span>Home</span></div>
+      <div class="tab"><span class="icon">🕐</span><span>Prayers</span></div>
+      <div class="tab active"><span class="icon">📖</span><span>Archive</span></div>
+      <div class="tab"><span class="icon">⚙️</span><span>Settings</span></div>
+    </div>
+  </div>
+
+  <!-- Settings (dark) -->
+  <div class="phone dark">
+    <div class="label-tag">SETTINGS (dark mode)</div>
+    <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+    <div class="content scrollable">
+      <div class="section-title">PREMIUM</div>
+      <div class="btn" style="background:var(--gold);color:#000">Upgrade to Premium</div>
+      <div class="soft" style="font-size:12px;margin-top:8px;opacity:0.7">Restore purchases</div>
+
+      <div class="section-title">LOCATION</div>
+      <div style="font-size:14px">Karachi, Pakistan</div>
+      <div class="btn" style="margin-top:8px;background:var(--green-light)">Update location</div>
+
+      <div class="section-title">PRAYER CALCULATION METHOD</div>
+      <div class="row selected">Karachi</div>
+      <div class="row">Muslim World League</div>
+      <div class="row">North America</div>
+
+      <div class="section-title">NOTIFICATION SOUND</div>
+      <div class="row selected">Default Azan</div>
+      <div class="row">Silent <span class="premium-tag">PREMIUM</span></div>
+
+      <div class="section-title">THEME</div>
+      <div class="row">System</div>
+      <div class="row">Light</div>
+      <div class="row selected">Dark</div>
+
+      <div class="section-title">LANGUAGE</div>
+      <div class="row selected">English</div>
+      <div class="row">اردو (Urdu)</div>
+
+      <div class="section-title">PRIVACY &amp; DATA</div>
+      <div class="btn-danger">Delete all my data</div>
+      <div class="soft" style="font-size:11px;margin-top:6px">Removes prayer history, streak, favorites on device and cloud.</div>
+    </div>
+    <div class="tabbar">
+      <div class="tab"><span class="icon">🕌</span><span>Home</span></div>
+      <div class="tab"><span class="icon">🕐</span><span>Prayers</span></div>
+      <div class="tab"><span class="icon">📖</span><span>Archive</span></div>
+      <div class="tab active"><span class="icon">⚙️</span><span>Settings</span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="legend">
+  <strong>Note:</strong> This is a static visual mockup using the actual theme colors, copy text, and component layouts from the codebase.<br/>
+  Real interactivity (countdown ticking, prayer toggles, share sheet, ads, paywall) only works in the installed Android app after `eas build`.
+</div>
+
+</body>
+</html>

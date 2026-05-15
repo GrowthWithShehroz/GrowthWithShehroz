@@ -36,7 +36,7 @@ const config: ExpoConfig = {
     assetBundlePatterns: ['**/*'],
     android: {
           package: 'com.islamicdailywisdom.app',
-          versionCode: 1,
+          versionCode:18,
           adaptiveIcon: {
                   foregroundImage: './assets/images/adaptive-icon.png',
                   backgroundColor: '#0F4C3A',

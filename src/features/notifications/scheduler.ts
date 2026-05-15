@@ -5,6 +5,7 @@ import { cancelByPrefix, configureNotifications } from '@/services/notifications
 import type { CalcMethod, Coords, PrayerName } from '@/types';
 
 const PREFIX = 'prayer-';
+const CHANNEL_ID = 'prayer-times-v2';
 const DAYS = 7;
 
 const PRAYER_LABEL: Record<PrayerName, string> = {
@@ -49,13 +50,16 @@ export async function scheduleRollingWindow({
           content: {
             title: `${PRAYER_LABEL[p.name]} Prayer`,
             body: `It's time for ${PRAYER_LABEL[p.name]}.`,
-            sound: sound ?? 'azan_default.mp3',
+            // Android: ignored when channelId is set (channel sound wins).
+            // Pass without extension for the rare case the channel was
+            // wiped and this becomes the fallback. iOS uses bundle name.
+            sound: (sound ?? 'azan_default').replace(/\.mp3$/i, ''),
             categoryIdentifier: 'prayer-times',
           },
           trigger: {
             type: Notifications.SchedulableTriggerInputTypes.DATE,
             date: p.time,
-            channelId: 'prayer-times',
+            channelId: CHANNEL_ID,
           } as Notifications.DateTriggerInput,
         });
         scheduled++;

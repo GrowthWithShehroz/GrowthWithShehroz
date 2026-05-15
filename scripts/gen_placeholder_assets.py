@@ -329,6 +329,64 @@ def make_feature_graphic(path: Path, w: int = 1024, h: int = 500):
     print(f"wrote {path.relative_to(ROOT)}  ({path.stat().st_size // 1024} KB)")
 
 
+def make_splash_icon(path: Path, w: int = 720, h: int = 960):
+    """Transparent splash-icon used by Android 12+ Splash Screen API.
+
+    Big crescent + 8-point star centered at the top half, and the
+    Arabic verse 'innaa ma'al usri yusra' below — both gold on a
+    transparent background so the system fills the rest with the
+    configured backgroundColor (Islamic green).
+    """
+    img = Image.new("RGBA", (w, h), TRANSPARENT)
+
+    # Logo block at upper-center
+    cx = w // 2
+    cy_logo = int(h * 0.38)
+    r = int(min(w, h) * 0.22)
+
+    # Decorative ring (subtle)
+    draw = ImageDraw.Draw(img)
+    ring_r = int(r * 1.55)
+    draw.ellipse([cx - ring_r, cy_logo - ring_r, cx + ring_r, cy_logo + ring_r],
+                 outline=GOLD + (90,), width=3)
+
+    # Crescent
+    crescent = Image.new("RGBA", img.size, TRANSPARENT)
+    cd = ImageDraw.Draw(crescent)
+    draw_crescent(cd, cx, cy_logo, r, GOLD + (255,), TRANSPARENT, openness=0.40)
+    img = Image.alpha_composite(img, crescent)
+
+    # 8-point star
+    sx = cx + int(r * 0.92)
+    sy = cy_logo - int(r * 0.05)
+    star_r = int(r * 0.20)
+    star = Image.new("RGBA", img.size, TRANSPARENT)
+    sd = ImageDraw.Draw(star)
+    eight_point_star(sd, sx, sy, star_r, GOLD + (255,))
+    eight_point_star(sd, sx, sy, int(star_r * 0.55), GOLD_LIGHT + (255,))
+    img = Image.alpha_composite(img, star)
+
+    # Arabic verse below the logo
+    draw = ImageDraw.Draw(img)
+    verse_font = find_font(int(h * 0.075), bold=True)
+    verse = "إِنَّ مَعَ الْعُسْرِ يُسْرًا"
+    vl, vt, vr_, vb = draw.textbbox((0, 0), verse, font=verse_font)
+    vw, vh = vr_ - vl, vb - vt
+    verse_y = cy_logo + ring_r + int(h * 0.05)
+    draw.text(((w - vw) // 2, verse_y), verse, font=verse_font, fill=CREAM)
+
+    # Subtle subtitle
+    sub_font = find_font(int(h * 0.038), bold=False)
+    sub = "Islamic Daily Wisdom"
+    sl, st_, sr_, sb = draw.textbbox((0, 0), sub, font=sub_font)
+    sw = sr_ - sl
+    draw.text(((w - sw) // 2, verse_y + vh + int(h * 0.025)),
+              sub, font=sub_font, fill=GOLD_LIGHT)
+
+    img.save(path, format="PNG", optimize=True)
+    print(f"wrote {path.relative_to(ROOT)}  ({path.stat().st_size // 1024} KB)")
+
+
 def make_silent_mp3(path: Path, seconds: float = 1.0):
     """Minimal MPEG1 L3 silence (32 kbps mono 44.1 kHz)."""
     header = bytes([0xFF, 0xFB, 0x10, 0xC4])
@@ -347,6 +405,7 @@ def make_silent_mp3(path: Path, seconds: float = 1.0):
 
 if __name__ == "__main__":
     make_icon(IMG / "icon.png", 1024, 0)
+    make_splash_icon(IMG / "splash-icon.png", 720, 960)
     make_adaptive_icon(IMG / "adaptive-icon.png", 1024)
     make_splash(IMG / "splash.png", 1284, 2778)
     make_notification_icon(IMG / "notification-icon.png", 96)

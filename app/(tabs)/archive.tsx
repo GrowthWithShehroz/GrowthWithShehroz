@@ -3,24 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AdBanner } from '@/components/AdBanner';
 import { EmptyState } from '@/components/EmptyState';
 import { ErrorState } from '@/components/ErrorState';
 import { LoadingState } from '@/components/LoadingState';
-import { PaywallSheet } from '@/components/PaywallSheet';
 import { useWisdomArchive } from '@/features/wisdom/api';
 import { toggleFavorite, useIsFavorite } from '@/features/wisdom/favorites';
-import { useAppStore } from '@/store/app';
 import { useTheme } from '@/theme';
 import type { WisdomCard as WisdomCardType } from '@/types';
 
 export default function ArchiveScreen() {
   const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
-  const premium = useAppStore((s) => s.premium);
   const { data, isLoading, isError, refetch } = useWisdomArchive(60);
   const [query, setQuery] = useState('');
-  const [paywallVisible, setPaywallVisible] = useState(false);
 
   const filtered = useMemo<WisdomCardType[]>(() => {
     if (!data) return [];
@@ -33,39 +28,6 @@ export default function ArchiveScreen() {
         c.reflection.toLowerCase().includes(q),
     );
   }, [data, query]);
-
-  if (!premium) {
-    return (
-      <SafeAreaView style={[styles.flex, { backgroundColor: theme.bg }]}>
-        <View style={[styles.locked, { padding: spacing.xl }]}>
-          <Text style={[typography.h1, { color: theme.text, textAlign: 'center' }]}>
-            {t('archive.lockedTitle')}
-          </Text>
-          <Text
-            style={[typography.body, { color: theme.textSoft, textAlign: 'center', marginTop: spacing.md }]}
-          >
-            {t('archive.lockedSubtitle')}
-          </Text>
-          <Pressable
-            onPress={() => setPaywallVisible(true)}
-            style={({ pressed }) => [
-              {
-                marginTop: spacing.xl,
-                backgroundColor: theme.primary,
-                paddingVertical: spacing.lg,
-                paddingHorizontal: spacing.xl,
-                borderRadius: radius.md,
-                opacity: pressed ? 0.85 : 1,
-              },
-            ]}
-          >
-            <Text style={[typography.h3, { color: '#fff' }]}>{t('home.unlockPremium')}</Text>
-          </Pressable>
-        </View>
-        <PaywallSheet visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: theme.bg }]} edges={['bottom']}>
@@ -104,7 +66,6 @@ export default function ArchiveScreen() {
           ItemSeparatorComponent={() => <View style={{ height: spacing.sm }} />}
         />
       )}
-      <AdBanner />
     </SafeAreaView>
   );
 }
@@ -152,6 +113,5 @@ function ArchiveRow({ card }: { card: WisdomCardType }) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  locked: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   search: { borderWidth: 1 },
 });

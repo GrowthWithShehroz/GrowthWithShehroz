@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AdBanner } from '@/components/AdBanner';
 import { EmptyState } from '@/components/EmptyState';
 import { LoadingState } from '@/components/LoadingState';
 import { PrayerRow } from '@/components/PrayerRow';
@@ -102,7 +101,6 @@ export default function PrayersScreen() {
           );
         })}
       </ScrollView>
-      <AdBanner />
     </SafeAreaView>
   );
 }

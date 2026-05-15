@@ -6,13 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AdBanner } from '@/components/AdBanner';
-import { PaywallSheet } from '@/components/PaywallSheet';
-import { PremiumBadge } from '@/components/PremiumBadge';
 import { deleteAllUserData } from '@/features/auth/deleteData';
 import { scheduleRollingWindow, clearAllPrayerNotifications } from '@/features/notifications/scheduler';
 import { requestAndGetLocation } from '@/features/prayers/location';
-import { restorePurchases } from '@/features/iap/client';
 import { applyRtlForLanguage, setLanguage as setI18nLanguage } from '@/services/i18n';
 import { useAppStore } from '@/store/app';
 import { useUserStore } from '@/store/user';
@@ -32,7 +28,7 @@ const CALC_METHODS: CalcMethod[] = [
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
-  const { theme: themePref, language, premium, setTheme, setLanguage } = useAppStore();
+  const { theme: themePref, language, setTheme, setLanguage } = useAppStore();
   const SOUNDS = [
     { id: 'azan_default', label: t('settings.soundDefault') },
     { id: 'silent', label: t('settings.soundSilent') },
@@ -42,7 +38,6 @@ export default function SettingsScreen() {
   const setCalcMethod = useUserStore((s) => s.setCalcMethod);
   const setNotificationSound = useUserStore((s) => s.setNotificationSound);
   const [busy, setBusy] = useState(false);
-  const [paywallVisible, setPaywallVisible] = useState(false);
 
   const handleLocationDetect = async () => {
     setBusy(true);
@@ -64,25 +59,6 @@ export default function SettingsScreen() {
         enabled: settings.prayerNotifications,
         sound: `${settings.notificationSound}.mp3`,
       });
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleSelectSound = (id: string) => {
-    if (id !== 'azan_default' && !premium) {
-      setPaywallVisible(true);
-      return;
-    }
-    setNotificationSound(id);
-  };
-
-  const handleRestore = async () => {
-    setBusy(true);
-    try {
-      const ok = await restorePurchases();
-      if (ok) Alert.alert(t('settings.restoredTitle'), t('settings.restoredBody'));
-      else Alert.alert(t('settings.noSubTitle'), t('settings.noSubBody'));
     } finally {
       setBusy(false);
     }
@@ -139,31 +115,6 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: theme.bg }]} edges={['bottom']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <Section title={t('settings.premium')}>
-          {premium ? (
-            <PremiumBadge />
-          ) : (
-            <Pressable
-              onPress={() => setPaywallVisible(true)}
-              style={({ pressed }) => [
-                {
-                  backgroundColor: theme.primary,
-                  paddingVertical: spacing.md,
-                  paddingHorizontal: spacing.lg,
-                  borderRadius: radius.md,
-                  alignSelf: 'flex-start',
-                  opacity: pressed ? 0.85 : 1,
-                },
-              ]}
-            >
-              <Text style={[typography.h3, { color: '#fff' }]}>{t('settings.upgradeToPremium')}</Text>
-            </Pressable>
-          )}
-          <Pressable onPress={handleRestore} disabled={busy} style={{ marginTop: spacing.sm }}>
-            <Text style={[typography.body, { color: theme.textSoft }]}>{t('settings.restore')}</Text>
-          </Pressable>
-        </Section>
-
         <Section title={t('settings.location')}>
           <Text style={[typography.body, { color: theme.text }]}>
             {settings.location?.label ??
@@ -209,8 +160,7 @@ export default function SettingsScreen() {
               key={s.id}
               label={s.label}
               selected={settings.notificationSound === s.id}
-              onPress={() => handleSelectSound(s.id)}
-              locked={s.id !== 'azan_default' && !premium}
+              onPress={() => setNotificationSound(s.id)}
             />
           ))}
         </Section>
@@ -327,8 +277,6 @@ export default function SettingsScreen() {
           </Text>
         </Section>
       </ScrollView>
-      <AdBanner />
-      <PaywallSheet visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
     </SafeAreaView>
   );
 }
@@ -354,14 +302,11 @@ function SelectableRow({
   label,
   selected,
   onPress,
-  locked,
 }: {
   label: string;
   selected: boolean;
   onPress: () => void;
-  locked?: boolean;
 }) {
-  const { t } = useTranslation();
   const { theme, spacing, radius, typography } = useTheme();
   return (
     <Pressable
@@ -382,9 +327,6 @@ function SelectableRow({
       ]}
     >
       <Text style={[typography.body, { color: selected ? '#fff' : theme.text }]}>{label}</Text>
-      {locked ? (
-        <Text style={[typography.label, { color: theme.accent }]}>{t('settings.premiumOnly')}</Text>
-      ) : null}
     </Pressable>
   );
 }

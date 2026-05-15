@@ -1,7 +1,8 @@
 /**
- * Validates that all credentials and config files are wired up correctly
- * before triggering an EAS build. Reads only filesystem state — never echoes
- * secret values, only their presence and shape.
+ * Validates that the minimum credentials required for an EAS build are
+ * wired up correctly. After removing AdMob + RevenueCat (the app is fully
+ * free), the only credential to validate is Firebase via
+ * android/google-services.json. Prints only field shapes, never values.
  *
  * Usage: npx tsx scripts/validate-credentials.ts
  */
@@ -31,53 +32,8 @@ function loadEnv(file: string): Record<string, string> {
 const root = resolve(__dirname, '..');
 const env = loadEnv(resolve(root, '.env'));
 
-// 1. .env presence
 check('.env file exists', existsSync(resolve(root, '.env')), resolve(root, '.env'));
 
-// 2. AdMob format
-const admobApp = env['EXPO_PUBLIC_ADMOB_ANDROID_APP_ID'];
-check(
-  'AdMob app ID set and well-formed',
-  !!admobApp && /^ca-app-pub-\d{16}~\d+$/.test(admobApp),
-  admobApp ? `prefix ${admobApp.slice(0, 19)}…` : 'missing',
-);
-
-const admobBanner = env['EXPO_PUBLIC_ADMOB_BANNER_UNIT_ID'];
-check(
-  'AdMob banner unit set and well-formed',
-  !!admobBanner && /^ca-app-pub-\d{16}\/\d+$/.test(admobBanner),
-  admobBanner ? `prefix ${admobBanner.slice(0, 19)}…` : 'missing',
-);
-
-const admobInter = env['EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID'];
-check(
-  'AdMob interstitial unit set and well-formed',
-  !!admobInter && /^ca-app-pub-\d{16}\/\d+$/.test(admobInter),
-  admobInter ? `prefix ${admobInter.slice(0, 19)}…` : 'missing',
-);
-
-// 3. AdMob publisher ID consistency (banner + interstitial should share publisher)
-if (admobApp && admobBanner && admobInter) {
-  const pub = (s: string): string | undefined => /^ca-app-pub-(\d{16})/.exec(s)?.[1];
-  const a = pub(admobApp);
-  const b = pub(admobBanner);
-  const i = pub(admobInter);
-  check(
-    'AdMob publisher ID consistent across app/banner/interstitial',
-    !!a && a === b && a === i,
-    a ? `publisher ${a}` : 'unparseable',
-  );
-}
-
-// 4. RevenueCat key shape
-const rc = env['EXPO_PUBLIC_REVENUECAT_ANDROID_KEY'];
-check(
-  'RevenueCat Android key set and well-formed',
-  !!rc && /^goog_[A-Za-z0-9]{20,}$/.test(rc),
-  rc ? `prefix ${rc.slice(0, 5)}… (${rc.length} chars)` : 'missing',
-);
-
-// 5. EAS project ID is a UUID
 const easId = env['EAS_PROJECT_ID'];
 check(
   'EAS project ID set and a valid UUID',
@@ -85,7 +41,6 @@ check(
   easId ?? 'missing',
 );
 
-// 6. google-services.json
 const gsPath = env['GOOGLE_SERVICES_JSON'] || './android/google-services.json';
 const gsResolved = resolve(root, gsPath);
 const gsExists = existsSync(gsResolved);
@@ -117,7 +72,6 @@ if (gsExists) {
   }
 }
 
-// 7. .gitignore covers secrets
 const gi = readFileSync(resolve(root, '.gitignore'), 'utf8');
 check('.env is gitignored', gi.includes('.env'), '.gitignore line found');
 check(
@@ -126,19 +80,9 @@ check(
   '.gitignore line found',
 );
 
-// 8. Native config files
-check(
-  'app.config.ts exists',
-  existsSync(resolve(root, 'app.config.ts')),
-  'app.config.ts',
-);
-check(
-  'eas.json exists',
-  existsSync(resolve(root, 'eas.json')),
-  'eas.json',
-);
+check('app.config.ts exists', existsSync(resolve(root, 'app.config.ts')), 'app.config.ts');
+check('eas.json exists', existsSync(resolve(root, 'eas.json')), 'eas.json');
 
-// 9. Wisdom seed has entries
 const seedPath = resolve(root, 'scripts/wisdom-seed.json');
 if (existsSync(seedPath)) {
   try {
@@ -153,12 +97,11 @@ if (existsSync(seedPath)) {
   }
 }
 
-// Report
 let pass = 0;
 let fail = 0;
 for (const c of checks) {
   const mark = c.ok ? 'OK ' : 'FAIL';
-  console.log(`${mark}  ${c.name.padEnd(50)} ${c.detail}`);
+  console.log(`${mark}  ${c.name.padEnd(55)} ${c.detail}`);
   if (c.ok) pass++;
   else fail++;
 }
@@ -169,4 +112,3 @@ if (fail > 0) {
   process.exit(1);
 }
 console.log('\nAll credentials and config look valid. You are ready to build.');
-console.log('Next: npx eas-cli build -p android --profile production');

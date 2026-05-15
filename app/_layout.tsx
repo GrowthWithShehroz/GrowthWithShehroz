@@ -7,11 +7,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { FORCE_PREMIUM_FOR_TESTING, warnIfMissing } from '@/config/env';
-import { initAds } from '@/features/ads/client';
-import { maybeShowInterstitialOnOpen } from '@/features/ads/interstitial';
+import { warnIfMissing } from '@/config/env';
 import { signInAnonymouslyIfNeeded } from '@/features/auth/client';
-import { configureIap, hydratePremiumFromCache } from '@/features/iap/client';
 import { scheduleRollingWindow } from '@/features/notifications/scheduler';
 import { initI18n, setLanguage as setI18nLanguage } from '@/services/i18n';
 import { configureNotifications, requestNotificationPermission } from '@/services/notifications';
@@ -35,28 +32,19 @@ export default function RootLayout() {
     let mounted = true;
     (async () => {
       // CRITICAL PATH — wait only for fast, in-process work so the splash
-      // dismisses within ~200ms. Everything that touches the network or
-      // a sandboxed native module fires-and-forgets in the background.
+      // dismisses within ~200ms. Slow work (Firebase auth + notification
+      // scheduling) runs in the background after the user sees the UI.
       try { warnIfMissing(); } catch (e) { if (__DEV__) console.warn('[boot] warnIfMissing', e); }
       try { configureNotifications(); } catch (e) { if (__DEV__) console.warn('[boot] configureNotifications', e); }
       try { initI18n(useAppStore.getState().language); } catch (e) { if (__DEV__) console.warn('[boot] initI18n', e); }
-      try { await hydratePremiumFromCache(); } catch (e) { if (__DEV__) console.warn('[boot] hydratePremiumFromCache', e); }
-      if (FORCE_PREMIUM_FOR_TESTING) {
-        try { useAppStore.getState().setPremium(true); } catch (e) { if (__DEV__) console.warn('[boot] setPremium', e); }
-      }
       if (mounted) {
         setReady(true);
         SplashScreen.hideAsync().catch(() => {});
       }
 
-      // BACKGROUND — slow stuff. Splash is already gone; users can
-      // interact while these finish. Order is intentional: auth before
-      // anything that might depend on a user id; scheduling after auth
-      // so cloud-mirroring works on first prayer tick.
+      // BACKGROUND — fire-and-forget.
       void (async () => {
         try { await signInAnonymouslyIfNeeded(); } catch (e) { if (__DEV__) console.warn('[boot-bg] signIn', e); }
-        try { await configureIap(); } catch (e) { if (__DEV__) console.warn('[boot-bg] iap', e); }
-        try { await initAds(); } catch (e) { if (__DEV__) console.warn('[boot-bg] ads', e); }
         try {
           const settings = useUserStore.getState().settings;
           const anyEnabled = Object.values(settings.prayerNotifications).some(Boolean);
@@ -72,7 +60,6 @@ export default function RootLayout() {
             }
           }
         } catch (e) { if (__DEV__) console.warn('[boot-bg] schedule', e); }
-        try { void maybeShowInterstitialOnOpen(); } catch (e) { if (__DEV__) console.warn('[boot-bg] interstitial', e); }
       })();
     })();
     return () => {

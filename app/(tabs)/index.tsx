@@ -5,18 +5,15 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type ViewShot from 'react-native-view-shot';
 
-import { AdBanner } from '@/components/AdBanner';
 import { CountdownTimer } from '@/components/CountdownTimer';
 import { EmptyState } from '@/components/EmptyState';
 import { ErrorState } from '@/components/ErrorState';
 import { LoadingState } from '@/components/LoadingState';
-import { PaywallSheet } from '@/components/PaywallSheet';
 import { ShareSheet } from '@/components/ShareSheet';
 import { StreakBadge } from '@/components/StreakBadge';
 import { WisdomCard } from '@/components/WisdomCard';
 import { captureToFile } from '@/features/share/capture';
 import { computeStreak } from '@/features/streak/compute';
-import { useDailyGate } from '@/features/wisdom/dailyGate';
 import { useDailyWisdom } from '@/features/wisdom/api';
 import { useNextPrayer, useTodayPrayerTimes } from '@/features/prayers/store';
 import { logEvent } from '@/services/analytics';
@@ -35,16 +32,11 @@ export default function HomeScreen() {
   const { times } = useTodayPrayerTimes();
   const { next, countdownMs } = useNextPrayer(times);
   const wisdom = useDailyWisdom();
-  const gate = useDailyGate();
 
   const [streak, setStreak] = useState({ current: 0, longest: 0, todayCount: 0 });
   const [shareVisible, setShareVisible] = useState(false);
-  const [paywallVisible, setPaywallVisible] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
 
-  // Recompute streak every time the Home tab regains focus, not only when
-  // tz changes — otherwise marking prayers complete on the Prayers tab
-  // and returning here leaves the streak stale.
   useFocusEffect(
     useCallback(() => {
       let mounted = true;
@@ -58,18 +50,13 @@ export default function HomeScreen() {
   );
 
   useEffect(() => {
-    if (gate.canView && wisdom.data) {
-      gate.markViewed();
+    if (wisdom.data) {
       void logEvent('view_wisdom', { date: wisdom.data.date });
     }
-  }, [gate.canView, wisdom.data]);
+  }, [wisdom.data]);
 
   const handleShare = async () => {
     if (!cardRef.current || !wisdom.data) return;
-    if (!gate.canView) {
-      setPaywallVisible(true);
-      return;
-    }
     const uri = await captureToFile(cardRef);
     if (!uri) return;
     setImageUri(uri);
@@ -82,7 +69,10 @@ export default function HomeScreen() {
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
             {next ? (
-              <CountdownTimer ms={countdownMs} label={t('home.nextPrayer', { name: t(`prayers.${next.name}`) })} />
+              <CountdownTimer
+                ms={countdownMs}
+                label={t('home.nextPrayer', { name: t(`prayers.${next.name}`) })}
+              />
             ) : !location ? (
               <Text style={[typography.body, { color: theme.textSoft }]}>
                 {t('home.locationNeeded')}
@@ -104,45 +94,7 @@ export default function HomeScreen() {
           {wisdom.isLoading ? (
             <LoadingState label={t('home.loadingWisdom')} />
           ) : wisdom.isError ? (
-            <ErrorState
-              message={t('home.loadError')}
-              onRetry={() => wisdom.refetch()}
-            />
-          ) : !gate.canView ? (
-            <View
-              style={{
-                padding: spacing.xl,
-                borderWidth: 1,
-                borderColor: theme.border,
-                borderRadius: radius.lg,
-                backgroundColor: theme.cardBg,
-              }}
-            >
-              <Text style={[typography.h2, { color: theme.text, textAlign: 'center' }]}>
-                {t('home.viewedToday')}
-              </Text>
-              <Text
-                style={[typography.body, { color: theme.textSoft, textAlign: 'center', marginTop: spacing.sm }]}
-              >
-                {t('home.comeBackTomorrow')}
-              </Text>
-              <Pressable
-                onPress={() => setPaywallVisible(true)}
-                style={({ pressed }) => [
-                  {
-                    marginTop: spacing.lg,
-                    backgroundColor: theme.primary,
-                    paddingVertical: spacing.md,
-                    borderRadius: radius.md,
-                    opacity: pressed ? 0.8 : 1,
-                  },
-                ]}
-              >
-                <Text style={[typography.h3, { color: '#fff', textAlign: 'center' }]}>
-                  {t('home.unlockPremium')}
-                </Text>
-              </Pressable>
-            </View>
+            <ErrorState message={t('home.loadError')} onRetry={() => wisdom.refetch()} />
           ) : wisdom.data ? (
             <WisdomCard ref={cardRef} card={wisdom.data} language={language} />
           ) : (
@@ -150,7 +102,7 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {gate.canView && wisdom.data ? (
+        {wisdom.data ? (
           <Pressable
             onPress={handleShare}
             style={({ pressed }) => [
@@ -169,7 +121,6 @@ export default function HomeScreen() {
           </Pressable>
         ) : null}
       </ScrollView>
-      <AdBanner />
 
       <ShareSheet
         visible={shareVisible}
@@ -181,7 +132,6 @@ export default function HomeScreen() {
             : ''
         }
       />
-      <PaywallSheet visible={paywallVisible} onClose={() => setPaywallVisible(false)} />
     </SafeAreaView>
   );
 }
